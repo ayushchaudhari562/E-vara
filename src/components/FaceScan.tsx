@@ -45,6 +45,7 @@ const FaceScan = ({ onComplete, existingImage }: FaceScanProps) => {
     setCaptured(null);
     setVideoReady(false);
     setCountdown(null);
+    setScanning(true);
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -54,15 +55,15 @@ const FaceScan = ({ onComplete, existingImage }: FaceScanProps) => {
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
         // Wait for the video to actually have frame data before starting countdown
-        videoRef.current.onloadeddata = () => {
+        videoRef.current.onloadedmetadata = () => {
           videoRef.current!.play().then(() => {
             setVideoReady(true);
-            setScanning(true);
             setCountdown(3);
           });
         };
       }
-    } catch {
+    } catch (error) {
+      console.error("Camera error:", error);
       // Camera not available — generate a styled placeholder
       const placeholderCanvas = document.createElement("canvas");
       placeholderCanvas.width = 320;
@@ -110,33 +111,44 @@ const FaceScan = ({ onComplete, existingImage }: FaceScanProps) => {
       }
       const data = placeholderCanvas.toDataURL("image/png");
       setCaptured(data);
+      setScanning(false);
       onComplete(data);
     }
   }, [onComplete]);
 
-    useEffect(() => {
-    if (countdown === null || !videoReady) return;
+  useEffect(() => {
+    if (countdown === null || !videoReady || !scanning) return;
 
     if (countdown === 0) {
-      // Capture IMMEDIATELY before stopping the stream
-      const data = captureFrame();
-      stopStream();
-      setScanning(false);
-      setCountdown(null);
-      setVideoReady(false);
-      
-      if (data) {
-        setCaptured(data);
-        onComplete(data);
-      }
-      return;
+      // Small timeout to ensure the last video frame has rendered
+      const captureTimer = setTimeout(() => {
+        const data = captureFrame();
+        if (data) {
+          setCaptured(data);
+          onComplete(data);
+          setScanning(false);
+          setCountdown(null);
+          setVideoReady(false);
+        } else {
+          console.warn("Failed to capture frame");
+          setScanning(false);
+        }
+        stopStream();
+      }, 150);
+      return () => clearTimeout(captureTimer);
     }
 
-    const timer = setTimeout(() => setCountdown((c) => (c !== null ? c - 1 : null)), 1000);
+    const timer = setTimeout(() => {
+      setCountdown((c) => (c !== null ? c - 1 : null));
+    }, 1000);
+    
     return () => clearTimeout(timer);
-  }, [countdown, videoReady, captureFrame, onComplete, stopStream]);
+  }, [countdown, videoReady, scanning, captureFrame, onComplete, stopStream]);
+
   // Cleanup on unmount
-  useEffect(() => () => stopStream(), [stopStream]);
+  useEffect(() => {
+    return () => stopStream();
+  }, [stopStream]);
 
   return (
     <div className="rounded-lg border border-border bg-card p-6">
@@ -155,6 +167,7 @@ const FaceScan = ({ onComplete, existingImage }: FaceScanProps) => {
               alt="Captured identity"
               className="w-full rounded-md object-cover"
               style={{ display: "block", maxHeight: "240px" }}
+              onError={(e) => console.error("Image load error:", e)}
             />
             <div className="absolute bottom-2 right-2 flex items-center gap-1 rounded bg-black/60 px-2 py-1">
               <CheckCircle className="h-3 w-3 text-primary" />
