@@ -151,7 +151,7 @@ const FaceScan = ({ onComplete, existingImage }: FaceScanProps) => {
   }, [stopStream]);
 
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
+    <div className="rounded-lg border border-border bg-card p-6 neon-panel neon-3d">
       <div className="mb-4 flex items-center gap-2">
         <Camera className="h-4 w-4 text-primary" />
         <h3 className="text-sm font-mono font-semibold text-foreground uppercase tracking-wider">
@@ -216,6 +216,20 @@ const FaceScan = ({ onComplete, existingImage }: FaceScanProps) => {
           Start Face Scan
         </button>
       )}
+
+
+      <div className="mt-4 rounded-md border border-[hsl(48,96%,53%/0.3)] bg-[hsl(48,96%,53%/0.1)] px-3 py-2.5">
+        <div className="flex gap-2">
+          <span className="shrink-0 text-lg">⚠️</span>
+          <div>
+            <p className="text-xs font-semibold text-[#d97706]">Face Verification Disclaimer</p>
+            <p className="mt-1 text-xs leading-relaxed text-[#b45309]">
+              Face verification is currently experimental. Real-world confidence ranges between 40–50%
+              depending on lighting, angle, and input quality.
+            </p>
+          </div>
+        </div>
+      </div>
 
       <canvas ref={canvasRef} className="hidden" />
     </div>

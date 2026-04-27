@@ -44,15 +44,16 @@ export const SearchResultsIntelligence = ({
 
       const result = analyzeSearchResults(mockResults, fullName, username, 10);
       setAnalysisResult(result);
-    } catch (err: any) {
-      setError(err.message || "Search failed. Please try again.");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "Search failed. Please try again.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
+    <div className="rounded-lg border border-border bg-card p-6 neon-panel neon-3d neon-float">
       <div className="mb-6 flex items-center gap-2">
         <Search className="h-5 w-5 text-primary" />
         <h3 className="text-lg font-semibold text-foreground">
@@ -196,6 +197,8 @@ async function fetchSearchResults(
   username: string,
   engine: "google" | "bing"
 ): Promise<SearchResult[]> {
+  void engine;
+
   // Simulate API delay
   await new Promise((resolve) => setTimeout(resolve, 1500));
 
