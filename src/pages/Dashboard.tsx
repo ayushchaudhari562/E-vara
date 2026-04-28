@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Shield, LogOut, History, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
@@ -58,6 +58,14 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   }, []);
 
   const isSetupComplete = identity?.faceImage && identity?.fullName;
+
+  const riskScore = useMemo(() => {
+    const base = 28;
+    const alertPressure = Math.min(40, alerts.length * 4);
+    const scanSignal = Math.min(18, scanCount * 6);
+    const monitoringSignal = monitoringActive ? 12 : 4;
+    return Math.min(100, base + alertPressure + scanSignal + monitoringSignal);
+  }, [alerts.length, scanCount, monitoringActive]);
 
   if (showHistory) {
     return <AlertHistory alerts={alerts} onBack={() => setShowHistory(false)} />;
@@ -151,6 +159,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           </div>
         </div>
       </main>
+      <AskEVaraChat />
     </div>
   );
 };
