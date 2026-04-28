@@ -29,6 +29,11 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   const [monitoringStart, setMonitoringStart] = useState<Date | null>(null);
   const [showHistory, setShowHistory] = useState(false);
 
+  const riskScore = useMemo(() => {
+    const base = 30 + scanCount * 8 + alerts.length * 7 + (monitoringActive ? 12 : 0);
+    return Math.min(96, Math.max(18, base));
+  }, [scanCount, alerts.length, monitoringActive]);
+
   const handleLogout = () => {
     logout();
     onLogout();
