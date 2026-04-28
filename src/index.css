@@ -170,11 +170,31 @@
   }
 
   .neon-button {
+    position: relative;
+    overflow: hidden;
     box-shadow:
       inset 0 1px 0 hsl(var(--foreground) / 0.12),
       0 0 0 1px hsl(var(--primary) / 0.35),
       0 0 18px hsl(var(--primary) / 0.25);
     transition: box-shadow 180ms ease, transform 180ms ease;
+  }
+
+  .neon-button::after {
+    content: "";
+    position: absolute;
+    width: 130px;
+    height: 130px;
+    border-radius: 9999px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    background: radial-gradient(circle, hsl(var(--primary) / 0.42), transparent 65%);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .neon-button:active::after {
+    animation: energy-pulse 420ms ease-out;
   }
 
   .neon-button:hover {
@@ -360,4 +380,46 @@
   text-shadow:
     0 0 8px hsl(var(--primary) / 0.45),
     0 0 22px hsl(var(--primary) / 0.25);
+}
+
+
+@keyframes scan-line-loop {
+  0% { transform: translateY(-120%); opacity: 0; }
+  12% { opacity: 0.75; }
+  80% { opacity: 0.35; }
+  100% { transform: translateY(520%); opacity: 0; }
+}
+
+@keyframes live-pulse {
+  0%, 100% { text-shadow: 0 0 6px hsl(var(--primary) / 0.22); }
+  50% { text-shadow: 0 0 16px hsl(var(--primary) / 0.62); }
+}
+
+@keyframes alert-entry {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes energy-pulse {
+  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.5; }
+  100% { transform: translate(-50%, -50%) scale(1.2); opacity: 0; }
+}
+
+.scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--primary) / 0.9), transparent);
+  pointer-events: none;
+  animation: scan-line-loop 4.5s linear infinite;
+}
+
+.live-pulse {
+  animation: live-pulse 1.5s ease-in-out infinite;
+}
+
+.alert-entry {
+  animation: alert-entry 320ms ease-out both;
 }

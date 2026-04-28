@@ -53,7 +53,7 @@ export const SearchResultsIntelligence = ({
   };
 
   return (
-    <div className="neon-card rounded-lg border border-border bg-card p-6">
+    <div className="neon-card rounded-lg border border-border/70 bg-card/75 p-6 backdrop-blur-md">
       <div className="mb-6 flex items-center gap-2">
         <Search className="h-5 w-5 text-primary" />
         <h3 className="text-lg font-semibold text-foreground">
@@ -108,7 +108,7 @@ export const SearchResultsIntelligence = ({
       {/* Results */}
       {analysisResult && (
         <div className="space-y-4">
-          {/* Summary Stats */}
+          {/* Summary Stats + Risk Heatmap */}
           <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
             <div className="rounded-md border border-border bg-secondary p-3 text-center">
               <div className="text-lg font-bold text-foreground">
@@ -149,6 +149,21 @@ export const SearchResultsIntelligence = ({
               <div className="text-[10px] text-muted-foreground font-mono">
                 Avg Confidence
               </div>
+            </div>
+          </div>
+
+          <div className="rounded-md border border-border/70 bg-background/40 p-3">
+            <p className="mb-2 text-[10px] font-mono uppercase tracking-[0.2em] text-muted-foreground">Risk Heatmap Strip</p>
+            <div className="flex gap-1">
+              {[analysisResult.summary.highRiskCount * 20, analysisResult.summary.mediumRiskCount * 16, analysisResult.summary.lowRiskCount * 12, analysisResult.summary.averageConfidence].map((value, idx) => {
+                const normalized = Math.min(100, Math.max(10, value));
+                return (
+                  <div key={idx} className="h-3 flex-1 rounded-sm" style={{
+                    background: normalized > 70 ? 'hsl(var(--severity-high))' : normalized > 45 ? 'hsl(var(--severity-medium))' : 'hsl(var(--severity-low))',
+                    opacity: 0.3 + normalized / 150,
+                  }} />
+                );
+              })}
             </div>
           </div>
 

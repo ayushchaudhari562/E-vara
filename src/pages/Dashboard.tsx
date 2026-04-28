@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Shield, LogOut, History, Sun, Moon } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { useTheme } from "@/hooks/useTheme";
@@ -9,6 +9,12 @@ import ToolsPanel from "@/components/ToolsPanel";
 import StatsCards from "@/components/StatsCards";
 import { SearchResultsIntelligence } from "@/components/SearchResultsIntelligence";
 import AlertHistory from "@/pages/AlertHistory";
+import { ThreatLevelIndicator } from "@/components/ThreatLevelIndicator";
+import { TimelineView } from "@/components/TimelineView";
+import { DigitalFootprintMap } from "@/components/DigitalFootprintMap";
+import { AIInsightPanel } from "@/components/AIInsightPanel";
+import { AttackSimulationPanel } from "@/components/AttackSimulationPanel";
+import { AIChatAssistant } from "@/components/AIChatAssistant";
 
 interface DashboardProps {
   onLogout: () => void;
@@ -27,6 +33,11 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   const [monitoringStart, setMonitoringStart] = useState<Date | null>(null);
   const [showHistory, setShowHistory] = useState(false);
 
+  const riskScore = useMemo(() => {
+    const base = 30 + scanCount * 8 + alerts.length * 7 + (monitoringActive ? 12 : 0);
+    return Math.min(96, Math.max(18, base));
+  }, [scanCount, alerts.length, monitoringActive]);
+
   const handleLogout = () => {
     logout();
     onLogout();
@@ -37,7 +48,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
     const updated = { ...(current || { fullName: "", username: "", socialLink: "", keywords: "" }), faceImage: imageData };
     saveIdentity(updated);
     setIdentity(updated);
-    setScanCount(c => c + 1);
+    setScanCount((c) => c + 1);
   }, [getIdentity, saveIdentity]);
 
   const handleIdentitySave = useCallback((data: { fullName: string; username: string; socialLink: string; keywords: string }) => {
@@ -97,15 +108,15 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-4 py-4 sm:py-6 sm:px-6">
-        <div className="mb-4 sm:mb-6">
-          <StatsCards
-            alertCount={alerts.length}
-            scanCount={scanCount}
-            monitoringActive={monitoringActive}
-            monitoringStartTime={monitoringStart}
-          />
-        </div>
+      <main className="mx-auto max-w-7xl space-y-4 px-4 py-4 sm:space-y-6 sm:px-6 sm:py-6">
+        <ThreatLevelIndicator riskScore={riskScore} />
+
+        <StatsCards
+          alertCount={alerts.length}
+          scanCount={scanCount}
+          monitoringActive={monitoringActive}
+          monitoringStartTime={monitoringStart}
+        />
 
         <div className="grid gap-4 sm:gap-6 lg:grid-cols-[360px_1fr]">
           <div className="space-y-4 lg:sticky lg:top-[57px] lg:self-start">
@@ -124,6 +135,10 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
                   onAlertsChange={handleAlertsChange}
                   onMonitoringChange={handleMonitoringChange}
                 />
+                <AIInsightPanel alertCount={alerts.length} monitoringActive={monitoringActive} />
+                <AttackSimulationPanel />
+                <TimelineView />
+                <DigitalFootprintMap />
                 <SearchResultsIntelligence
                   fullName={identity!.fullName}
                   username={identity!.username}
@@ -147,6 +162,7 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           </div>
         </div>
       </main>
+      <AIChatAssistant />
     </div>
   );
 };
