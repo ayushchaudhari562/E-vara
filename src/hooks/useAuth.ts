@@ -1,8 +1,7 @@
-import { useState, useCallback } from "react";
-
-interface AuthUser {
-  email: string;
-}
+import { useState, useCallback, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+import { User } from "@supabase/supabase-js";
+import { toast } from "sonner";
 
 interface IdentityInfo {
   fullName: string;
@@ -13,34 +12,67 @@ interface IdentityInfo {
 }
 
 export function useAuth() {
-  const [user, setUser] = useState<AuthUser | null>(() => {
-    const session = localStorage.getItem("evara-session");
-    return session ? JSON.parse(session) : null;
-  });
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const register = useCallback((email: string, password: string, confirmPassword: string): string | null => {
-    if (password !== confirmPassword) return "Passwords do not match";
-    if (password.length < 6) return "Password must be at least 6 characters";
-    const users = JSON.parse(localStorage.getItem("evara-users") || "{}");
-    if (users[email]) return "Email already registered";
-    users[email] = password;
-    localStorage.setItem("evara-users", JSON.stringify(users));
-    return null;
+  useEffect(() => {
+    // Check active sessions and sets the user
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    // Listen for changes on auth state (sign in, sign out, etc.)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
-  const login = useCallback((email: string, password: string): string | null => {
-    const users = JSON.parse(localStorage.getItem("evara-users") || "{}");
-    if (!users[email] || users[email] !== password) return "Invalid email or password";
-    const u = { email };
-    localStorage.setItem("evara-session", JSON.stringify(u));
-    setUser(u);
-    return null;
-  }, []);
+  const register = async (email: string, password: string): Promise<string | null> => {
+    try {
+      const { error } = await supabase.auth.signUp({
+        email,
+        password,
+      });
+      if (error) throw error;
+      toast.success("Registration Successful", {
+        description: "Please check your email for the verification link."
+      });
+      return null;
+    } catch (err: any) {
+      return err.message;
+    }
+  };
 
-  const logout = useCallback(() => {
-    localStorage.removeItem("evara-session");
-    setUser(null);
-  }, []);
+  const login = async (email: string, password: string): Promise<string | null> => {
+    try {
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+      if (error) throw error;
+      toast.success("Login Successful", {
+        description: "Establishing secure session..."
+      });
+      return null;
+    } catch (err: any) {
+      return err.message;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
+      // Local storage cleanup if any non-auth items exist
+      localStorage.removeItem("evara-identity"); 
+    } catch (err: any) {
+      toast.error("Logout failed", { description: err.message });
+    }
+  };
 
   const getIdentity = useCallback((): IdentityInfo | null => {
     const data = localStorage.getItem("evara-identity");
@@ -51,5 +83,5 @@ export function useAuth() {
     localStorage.setItem("evara-identity", JSON.stringify(info));
   }, []);
 
-  return { user, register, login, logout, getIdentity, saveIdentity };
+  return { user, loading, register, login, logout, getIdentity, saveIdentity };
 }

@@ -4,6 +4,7 @@ import { User, ShieldCheck, Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { sha256 } from "@/lib/crypto";
 
 export interface IdentityData {
   email: string;
@@ -43,7 +44,7 @@ const IdentityForm = ({ onSave, initial }: IdentityFormProps) => {
       }
 
       // 1. Register or update the identity in public.monitored_identities
-      const identity_hash = btoa(email).slice(0, 32); 
+      const identity_hash = await sha256(email); 
 
       let identityData;
       try {

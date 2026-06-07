@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import { Shield, Eye } from "lucide-react";
+import { Shield, Eye, Loader2, ArrowLeft } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface AuthPageProps {
   onAuth: () => void;
@@ -12,109 +13,148 @@ const AuthPage = ({ onAuth }: AuthPageProps) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const { register, login } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setLoading(true);
 
     if (mode === "register") {
-      const err = register(email, password, confirmPassword);
-      if (err) { setError(err); return; }
+      if (password !== confirmPassword) {
+        setError("Passwords do not match");
+        setLoading(false);
+        return;
+      }
+      const err = await register(email, password);
+      if (err) { 
+        setError(err); 
+        setLoading(false);
+        return; 
+      }
       setMode("login");
       setPassword("");
       setConfirmPassword("");
     } else {
-      const err = login(email, password);
-      if (err) { setError(err); return; }
+      const err = await login(email, password);
+      if (err) { 
+        setError(err); 
+        setLoading(false);
+        return; 
+      }
       onAuth();
     }
+    setLoading(false);
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
-      <div className="w-full max-w-md">
+    <div className="flex min-h-screen items-center justify-center bg-[#050608] px-4 font-mono">
+      <div className="absolute inset-0 hud-grid opacity-5 pointer-events-none" />
+      
+      <div className="w-full max-w-md relative z-10">
+        <Link to="/" className="inline-flex items-center gap-2 text-[10px] uppercase font-bold text-muted-foreground hover:text-primary mb-8 transition-colors">
+          <ArrowLeft className="h-3 w-3" /> Back to Grid
+        </Link>
+
         <div className="mb-8 text-center">
           <div className="mb-4 inline-flex items-center gap-2">
-            <Shield className="h-8 w-8 text-primary" />
-            <h1 className="text-2xl font-mono font-bold text-foreground tracking-tight">E-Vara</h1>
+            <div className="p-2 bg-primary rounded-lg security-orange-glow">
+              <Shield className="h-6 w-6 text-white" />
+            </div>
+            <h1 className="text-2xl font-black text-foreground tracking-tighter uppercase">E-Vara</h1>
           </div>
-          <p className="text-sm text-muted-foreground font-body">Digital Reputation Protector</p>
+          <p className="text-[10px] text-muted-foreground uppercase tracking-[0.4em]">Establishing Secure Session</p>
         </div>
 
-        <div className="rounded-lg border border-border bg-card p-8">
-          <h2 className="mb-6 text-lg font-mono font-semibold text-foreground">
-            {mode === "login" ? "Sign In" : "Create Account"}
+        <div className="rounded-[24px] border border-white/10 bg-[#11141B] p-8 md:p-10 shadow-2xl relative overflow-hidden">
+          <div className="absolute inset-0 hud-grid opacity-[0.03] pointer-events-none" />
+          
+          <h2 className="mb-8 text-xl font-bold text-foreground uppercase tracking-tight relative z-10">
+            {mode === "login" ? "Identity_Verify" : "Register_Protocol"}
           </h2>
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="mb-1.5 block text-xs font-mono text-muted-foreground uppercase tracking-wider">Email</label>
+          <form onSubmit={handleSubmit} className="space-y-6 relative z-10">
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Email_Designation</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full rounded-md border border-border bg-secondary px-3 py-2.5 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                placeholder="you@example.com"
+                className="w-full rounded-[12px] border border-white/10 bg-[#050608]/50 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary transition-all"
+                placeholder="target@company.com"
               />
             </div>
 
-            <div>
-              <label className="mb-1.5 block text-xs font-mono text-muted-foreground uppercase tracking-wider">Password</label>
+            <div className="space-y-2">
+              <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Access_Key</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  className="w-full rounded-md border border-border bg-secondary px-3 py-2.5 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full rounded-[12px] border border-white/10 bg-[#050608]/50 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary transition-all"
                   placeholder="••••••••"
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground">
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary">
                   <Eye className="h-4 w-4" />
                 </button>
               </div>
             </div>
 
             {mode === "register" && (
-              <div>
-                <label className="mb-1.5 block text-xs font-mono text-muted-foreground uppercase tracking-wider">Confirm Password</label>
+              <div className="space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground ml-1">Confirm_Access_Key</label>
                 <input
                   type="password"
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
-                  className="w-full rounded-md border border-border bg-secondary px-3 py-2.5 text-sm font-body text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full rounded-[12px] border border-white/10 bg-[#050608]/50 px-4 py-3 text-sm text-foreground focus:outline-none focus:ring-1 focus:ring-primary transition-all"
                   placeholder="••••••••"
                 />
               </div>
             )}
 
-            {error && <p className="text-sm font-body text-primary">{error}</p>}
+            {error && (
+              <div className="p-3 rounded-lg border border-primary/20 bg-primary/5 text-[10px] uppercase font-bold text-primary animate-pulse">
+                ERR: {error}
+              </div>
+            )}
 
             <button
               type="submit"
-              className="w-full rounded-md bg-primary px-4 py-2.5 text-sm font-mono font-medium text-primary-foreground hover:opacity-90 transition-opacity"
+              disabled={loading}
+              className="w-full rounded-[14px] bg-primary py-4 text-xs font-bold text-white uppercase tracking-[0.3em] hover:bg-primary/90 transition-all security-orange-glow disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             >
-              {mode === "login" ? "Sign In" : "Register"}
+              {loading ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> 
+                  Processing...
+                </>
+              ) : (
+                mode === "login" ? "Initialize_Link" : "Establish_Protocol"
+              )}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-xs text-muted-foreground font-body">
-            {mode === "login" ? "Don't have an account?" : "Already have an account?"}{" "}
+          <p className="mt-8 text-center text-[10px] text-muted-foreground uppercase tracking-widest">
+            {mode === "login" ? "No account designation?" : "Identity already verified?"}{" "}
             <button
               onClick={() => { setMode(mode === "login" ? "register" : "login"); setError(""); }}
-              className="text-primary hover:underline"
+              className="text-primary hover:underline font-bold"
             >
-              {mode === "login" ? "Register" : "Sign In"}
+              {mode === "login" ? "[Register]" : "[Sign_In]"}
             </button>
           </p>
         </div>
 
-        <p className="mt-6 text-center text-xs text-muted-foreground font-body leading-relaxed">
-          E-Vara is a prototype monitoring tool designed to help users identify potential identity misuse online.
+        <p className="mt-8 text-center text-[9px] text-muted-foreground uppercase tracking-widest leading-relaxed">
+          All session data is encrypted using military-grade protocols. <br />
+          Unauthorized access attempts are logged and reported.
         </p>
       </div>
     </div>
