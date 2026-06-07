@@ -1,25 +1,55 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
-import { Shield, Database, Plus, Trash2, CheckCircle2, AlertTriangle, Search, Globe, Mail, Fingerprint } from "lucide-react";
+import { Shield, Database, Plus, Trash2, Search, Globe, Mail, Fingerprint } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { supabase, isSimulationMode } from "@/integrations/supabase/client";
 
 const IdentityRecords = () => {
   const { user } = useAuth();
-  const [records, setRecords] = useState([
-    { id: 1, type: "Primary Email", value: user?.email || "target@e-vara.io", status: "Active", risk: "Low" },
-    { id: 2, type: "Public Alias", value: "@exec_alpha_01", status: "Monitoring", risk: "Medium" },
-    { id: 3, type: "Domain", value: "vault.executive-assets.com", status: "Active", risk: "Low" },
-  ]);
+  const queryClient = useQueryClient();
 
-  const handleDelete = (id: number) => {
-    setRecords(records.filter(r => r.id !== id));
-    toast.error("Record De-linked", {
-      description: "Identifier removed from continuous monitoring."
-    });
-  };
+  const { data: records = [], isLoading } = useQuery({
+    queryKey: ["monitored-records", user?.id],
+    queryFn: async () => {
+      if (isSimulationMode) {
+        return [
+          { id: 1, type: "Primary Email", value: user?.email || "target@e-vara.io", status: "Active", risk: "Low" },
+          { id: 2, type: "Public Alias", value: "@exec_alpha_01", status: "Monitoring", risk: "Medium" },
+          { id: 3, type: "Domain", value: "vault.executive-assets.com", status: "Active", risk: "Low" },
+        ];
+      }
+
+      const { data, error } = await supabase
+        .from('monitored_identities' as any)
+        .select('*')
+        .eq('user_id', user?.id);
+      
+      if (error) throw error;
+      return data.map((d: any) => ({
+        id: d.id,
+        type: d.identity_type,
+        value: d.identity_value_encrypted,
+        status: d.is_active ? "Active" : "Disabled",
+        risk: d.risk_score > 60 ? "High" : d.risk_score > 30 ? "Medium" : "Low"
+      }));
+    },
+    enabled: !!user
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: async (id: any) => {
+      if (isSimulationMode) return;
+      const { error } = await supabase.from('monitored_identities' as any).delete().eq('id', id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["monitored-records"] });
+      toast.error("Record De-linked");
+    }
+  });
 
   return (
     <div className="min-h-screen bg-[#050608] text-foreground font-mono selection:bg-primary/30">
@@ -32,10 +62,6 @@ const IdentityRecords = () => {
               </div>
               <span className="text-xl font-black tracking-tight uppercase">E-VARA</span>
             </Link>
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10">
-              <Database className="h-3 w-3 text-muted-foreground" />
-              <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Identity_Records_OS</span>
-            </div>
           </div>
           <Link to="/client-portal">
             <Button variant="ghost" className="text-[10px] uppercase font-bold tracking-widest hover:bg-white/5">Back to Portal</Button>
@@ -61,13 +87,13 @@ const IdentityRecords = () => {
           </div>
 
           <div className="grid gap-4">
-            {records.map((record) => (
+            {records.map((record: any) => (
               <div key={record.id} className="group p-6 rounded-[20px] border border-white/5 bg-[#11141B] hover:border-primary/30 transition-all flex flex-col md:flex-row md:items-center justify-between gap-6 relative overflow-hidden">
                 <div className="absolute inset-0 hud-grid opacity-[0.02] pointer-events-none" />
                 
                 <div className="flex items-center gap-6 relative z-10">
                   <div className={`h-12 w-12 rounded-xl flex items-center justify-center border ${record.risk === 'High' ? 'border-alert/30 bg-alert/5' : 'border-white/10 bg-white/5'}`}>
-                    {record.type.includes("Email") ? <Mail className="h-5 w-5 text-primary" /> : <Globe className="h-5 w-5 text-secondary" />}
+                    {String(record.type).includes("Email") ? <Mail className="h-5 w-5 text-primary" /> : <Globe className="h-5 w-5 text-secondary" />}
                   </div>
                   <div>
                     <div className="flex items-center gap-3 mb-1">
@@ -91,7 +117,7 @@ const IdentityRecords = () => {
                     <Button variant="outline" size="sm" className="border-white/10 hover:bg-white/5 text-[9px] uppercase font-bold px-4">
                       Re-Scan
                     </Button>
-                    <button onClick={() => handleDelete(record.id)} className="p-2 text-muted-foreground hover:text-alert transition-colors">
+                    <button onClick={() => deleteMutation.mutate(record.id)} className="p-2 text-muted-foreground hover:text-alert transition-colors">
                       <Trash2 className="h-4 w-4" />
                     </button>
                   </div>
@@ -100,12 +126,12 @@ const IdentityRecords = () => {
             ))}
           </div>
 
-          <div className="mt-12 p-8 rounded-[24px] border border-white/5 bg-white/[0.01] text-center">
-             <Search className="h-8 w-8 text-primary/20 mx-auto mb-4" />
-             <p className="text-[10px] text-muted-foreground uppercase tracking-[0.3em]">
-               All data in this vault is AES-256 encrypted and never stored in plain text.
-             </p>
-          </div>
+          {records.length === 0 && !isLoading && (
+            <div className="text-center py-20 border border-dashed border-white/10 rounded-[24px]">
+               <Database className="h-12 w-12 text-muted-foreground mx-auto mb-4 opacity-20" />
+               <p className="text-sm text-muted-foreground uppercase tracking-widest">No identifiers found in the grid.</p>
+            </div>
+          )}
         </div>
       </div>
     </div>

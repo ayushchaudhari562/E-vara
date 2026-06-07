@@ -14,26 +14,32 @@ serve(async (req) => {
   try {
     const { identityId, identityValue, userId } = await req.json()
 
-    // 1. Initialize Supabase Admin Client
+    // Initialize Supabase Admin Client
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL') ?? '',
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? ''
     )
 
-    // 2. Intelligence Engine (Ready for Real API)
-    // To enable real scanning, add HIBP_API_KEY to your Supabase Secrets
+    // TIER ENFORCEMENT: Server-side check
+    const { data: profile } = await supabase
+      .from('user_profiles')
+      .select('tier')
+      .eq('id', userId)
+      .single()
+
+    const maxResults = profile?.tier === 'omni' ? 50 : profile?.tier === 'executive' ? 10 : 2
+    console.log(`Node authorized for ${profile?.tier} tier. Max analysis limit: ${maxResults}`)
+
     const HIBP_KEY = Deno.env.get('HIBP_API_KEY');
     let breaches = [];
 
     if (HIBP_KEY) {
-       // --- REAL LOGIC START ---
-       // Fetch real data from HaveIBeenPwned or similar
        const response = await fetch(`https://haveibeenpwned.com/api/v3/breachedaccount/${identityValue}`, {
           headers: { 'hibp-api-key': HIBP_KEY, 'user-agent': 'E-Vara-Audit-Engine' }
        });
        if (response.status === 200) {
           const data = await response.json();
-          breaches = data.map((b: any) => ({
+          breaches = data.slice(0, maxResults).map((b: any) => ({
              source_name: b.Name,
              leak_date: b.BreachDate,
              severity: b.PwnCount > 1000000 ? 'critical' : 'high',
@@ -41,35 +47,20 @@ serve(async (req) => {
              description: b.Description
           }));
        }
-       // --- REAL LOGIC END ---
     } else {
-       // --- DYNAMIC SIMULATION LOGIC ---
-       // Instead of hardcoded data, we simulate results based on the domain
-       const domain = identityValue.split('@')[1] || "unknown";
-       if (domain.includes('gmail') || domain.includes('outlook')) {
-          breaches = [
-            {
-              source_name: `${domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1)} Identity Correlation`,
-              leak_date: new Date().toISOString().split('T')[0],
-              severity: "medium",
-              data_types: ["email", "metadata"],
-              description: `Automated analysis detected ${domain} identifiers associated with public social profile metadata.`
-            }
-          ];
-       } else {
-          breaches = [
-            {
-              source_name: "Corporate Surface Discovery",
-              leak_date: "2024-01-12",
-              severity: "low",
-              data_types: ["domain_mx_records"],
-              description: `DNS records for ${domain} are exposed to public indexing. Recommended: Enable MX shielding.`
-            }
-          ];
-       }
+       // ALGORITHMIC HONESTY: Synthetic Intelligence Samples
+       // Explicitly labeled as simulation to prevent consumer fraud liability.
+       breaches = [
+         {
+           source_name: "[SYNTHETIC_INTEL] Public Metadata Correlation",
+           leak_date: new Date().toISOString().split('T')[0],
+           severity: "medium",
+           data_types: ["email_alias", "domain_origin"],
+           description: "THIS IS A SYNTHETIC INTELLIGENCE SAMPLE. In a production environment, this node would link to verified leak repositories (HIBP, DeHashed)."
+         }
+       ];
     }
 
-    // 3. Store findings in the database
     for (const breach of breaches) {
       await supabase.from('identity_breaches').insert({
         identity_id: identityId,
@@ -77,7 +68,6 @@ serve(async (req) => {
       })
     }
 
-    // 4. Update the identity risk score based on breach count
     const risk_score = breaches.length > 0 ? 65 : 12;
     await supabase.from('monitored_identities')
       .update({ risk_score, last_scanned_at: new Date().toISOString() })
@@ -87,7 +77,7 @@ serve(async (req) => {
       JSON.stringify({ 
         success: true, 
         count: breaches.length,
-        message: `Analysis complete. Found ${breaches.length} intelligence markers.` 
+        message: `Intelligence scan complete using ${HIBP_KEY ? 'Real-Time OSINT' : 'Synthetic Samples'}.` 
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' }, status: 200 }
     )

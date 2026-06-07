@@ -1,16 +1,19 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
-import { Shield, MessageSquare, Send, User, Bot, Clock, Lock, ChevronRight, HelpCircle, FileText } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Shield, MessageSquare, Send, User, Bot, Clock, Lock, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { toast } from "sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 const SupportPage = () => {
+  const { user } = useAuth();
   const [message, setMessage] = useState("");
   const [chat, setChat] = useState([
     { role: "system", content: "Secure communication channel established." },
     { role: "bot", content: "Welcome, Operative. I am your dedicated intelligence assistant. How can I assist your defense protocols today?" },
   ]);
+
+  const sessionId = useMemo(() => Math.random().toString(36).substring(7).toUpperCase(), []);
 
   const handleSend = (e: React.FormEvent) => {
     e.preventDefault();
@@ -35,10 +38,6 @@ const SupportPage = () => {
               </div>
               <span className="text-xl font-black tracking-tight uppercase">E-VARA</span>
             </Link>
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10">
-              <MessageSquare className="h-3 w-3 text-muted-foreground" />
-              <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Support_Protocol_OS</span>
-            </div>
           </div>
           <Link to="/client-portal">
             <Button variant="ghost" className="text-[10px] uppercase font-bold tracking-widest hover:bg-white/5">Back to Portal</Button>
@@ -94,7 +93,7 @@ const SupportPage = () => {
           <div className="p-6 border-b border-white/5 flex items-center justify-between relative z-10 bg-[#11141B]/80 backdrop-blur-md">
              <div className="flex items-center gap-3">
                 <div className="h-2 w-2 rounded-full bg-primary animate-pulse" />
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Secure Terminal • Session_ID: {Math.random().toString(36).substring(7).toUpperCase()}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Secure Terminal • Session_ID: {sessionId}</span>
              </div>
              <Lock className="h-3.5 w-3.5 text-muted-foreground" />
           </div>

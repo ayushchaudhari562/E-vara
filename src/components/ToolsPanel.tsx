@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState } from "react";
 import { Search, ExternalLink, AlertTriangle, Lock, Loader2, ShieldAlert, CheckCircle, FileText } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase, isSimulationMode } from "@/integrations/supabase/client";
 import { generateExecutiveReport } from "@/lib/report-generator";
 
 interface BreachResult {
@@ -58,16 +58,13 @@ const ToolsPanel = ({ identity }: ToolsPanelProps) => {
       "Generating Security Audit Dossier..."
     ];
 
-    // Check if we are in Demo Mode (missing keys)
-    const isDemoMode = !import.meta.env.VITE_SUPABASE_URL || import.meta.env.VITE_SUPABASE_URL.includes("placeholder");
-
     try {
       for (const step of steps) {
         setScanStep(step);
         await new Promise(r => setTimeout(r, 600 + Math.random() * 800));
       }
 
-      if (isDemoMode) {
+      if (isSimulationMode) {
         setScanResults({
           results: [
             {

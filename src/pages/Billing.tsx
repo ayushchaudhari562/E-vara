@@ -2,12 +2,24 @@
 import { Shield, CreditCard, Check, ArrowUpRight, Download, Clock, Zap, Building } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { isSimulationMode } from "@/integrations/supabase/client";
 
 const BillingPage = () => {
-  const invoices = [
-    { id: "INV-001", date: "Oct 01, 2026", amount: "$29.00", status: "Paid" },
-    { id: "INV-002", date: "Sep 01, 2026", amount: "$29.00", status: "Paid" },
-  ];
+  const { data: invoices = [], isLoading } = useQuery({
+    queryKey: ["billing-history"],
+    queryFn: async () => {
+      // In a real SaaS, this would query a 'billing' table or Stripe API via Edge Function
+      if (isSimulationMode) {
+        await new Promise(r => setTimeout(r, 800));
+        return [
+          { id: "INV-001", date: "Oct 01, 2026", amount: "$29.00", status: "Paid" },
+          { id: "INV-002", date: "Sep 01, 2026", amount: "$29.00", status: "Paid" },
+        ];
+      }
+      return []; // Real logic placeholder
+    }
+  });
 
   return (
     <div className="min-h-screen bg-[#050608] text-foreground font-mono selection:bg-primary/30">
@@ -20,10 +32,6 @@ const BillingPage = () => {
               </div>
               <span className="text-xl font-black tracking-tight uppercase">E-VARA</span>
             </Link>
-            <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10">
-              <CreditCard className="h-3 w-3 text-muted-foreground" />
-              <span className="text-[10px] uppercase font-bold tracking-widest text-muted-foreground">Financial_Audit_OS</span>
-            </div>
           </div>
           <Link to="/client-portal">
             <Button variant="ghost" className="text-[10px] uppercase font-bold tracking-widest hover:bg-white/5">Back to Portal</Button>
@@ -109,7 +117,9 @@ const BillingPage = () => {
                     </tr>
                  </thead>
                  <tbody className="text-sm">
-                    {invoices.map((inv) => (
+                    {isLoading ? (
+                      <tr><td colSpan={5} className="px-6 py-12 text-center text-muted-foreground animate-pulse">Decrypting ledger...</td></tr>
+                    ) : invoices.map((inv: any) => (
                       <tr key={inv.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
                         <td className="px-6 py-4 font-bold">{inv.id}</td>
                         <td className="px-6 py-4 text-muted-foreground">{inv.date}</td>

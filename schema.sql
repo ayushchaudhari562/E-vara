@@ -59,6 +59,32 @@ BEGIN
 END;
 $$ language 'plpgsql';
 
-CREATE TRIGGER tr_update_last_scanned
-BEFORE UPDATE ON monitored_identities
-FOR EACH ROW EXECUTE PROCEDURE update_last_scanned();
+-- 4. Secure User Profiles
+-- Stores verified subscription tiers and operational metadata.
+CREATE TABLE user_profiles (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    tier TEXT DEFAULT 'tactical' CHECK (tier IN ('tactical', 'executive', 'omni')),
+    node_id_stable TEXT UNIQUE NOT NULL, -- Permanent, deterministic ID
+    metadata JSONB DEFAULT '{}',
+    updated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- RLS for User Profiles
+ALTER TABLE user_profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Users can only view their own profile" 
+ON user_profiles FOR SELECT USING (auth.uid() = id);
+
+-- TRIGGER: Auto-create profile on Auth Signup
+CREATE OR REPLACE FUNCTION handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+    INSERT INTO public.user_profiles (id, node_id_stable)
+    VALUES (NEW.id, 'NODE-' || upper(substring(NEW.id::text from 1 for 8)));
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER on_auth_user_created
+AFTER INSERT ON auth.users
+FOR EACH ROW EXECUTE PROCEDURE handle_new_user();
+
