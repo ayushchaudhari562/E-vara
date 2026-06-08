@@ -33,6 +33,7 @@ CREATE TABLE identity_breaches (
 CREATE TABLE user_profiles (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     tier TEXT DEFAULT 'tactical' CHECK (tier IN ('tactical', 'executive', 'omni')),
+    security_clearance TEXT DEFAULT 'UNCLASSIFIED' CHECK (security_clearance IN ('UNCLASSIFIED', 'SECRET', 'TOP_SECRET')),
     node_id_stable TEXT UNIQUE NOT NULL,
     stripe_customer_id TEXT UNIQUE,
     billing_status TEXT DEFAULT 'inactive',

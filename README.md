@@ -1,51 +1,66 @@
-# E-VARA: Personal Defense & Intelligence OS
+# E-VARA: Autonomous Identity Intelligence & Defense OS
 
-E-VARA is a high-end, futuristic Cyber Intelligence platform designed for real-time identity monitoring, threat surface analysis, and executive security auditing.
+[![Project Status: Active](https://img.shields.io/badge/Project%20Status-Active-brightgreen.svg)]()
+[![Security: Enterprise Grade](https://img.shields.io/badge/Security-Enterprise%20Grade-blue.svg)]()
+[![License: Proprietary](https://img.shields.io/badge/License-Proprietary-red.svg)]()
 
-## 🚀 Vision
-To provide individuals and organizations with a military-grade "Operational Awareness" dashboard of their digital footprint. E-VARA moves beyond simple breach alerts by correlating identity markers across the surface and deep web.
+E-VARA is a state-of-the-art, military-grade Cyber Intelligence platform engineered for real-time identity monitoring, threat surface analysis, and executive digital protection. Built for high-net-worth individuals, government officials, and enterprise executives, E-VARA provides unprecedented operational awareness of digital exposure.
 
-## 💎 High-Multiplier Features (10k+ Valuation)
-- **Advanced Identity Intelligence Engine**: Correlates emails, handles, and legal names to map exposure across 5+ major social platforms.
-- **Executive Threat Auditing**: Automated multi-page PDF generation producing professional-grade "Identity Dossiers" for high-net-worth individuals and corporate executives.
-- **Dark Web Breach Integration**: Deep integration with historical leak databases (HaveIBeenPwned, DeHashed, etc.) via secure Edge Functions.
-- **Attack Vector Simulation**: Real-time visualization of potential traversal paths an attacker might take using public metadata.
-- **Futuristic HUD Interface**: A custom-engineered, ultra-modern UI built with Tailwind CSS, Framer Motion, and Shadcn UI, optimized for high-end presentation.
-- **SaaS-Ready Monetization**: Pre-built multi-tier pricing structure (Tactical, Executive, Enterprise) with secure billing entry points.
+## 💎 Value Proposition: The $100k+ Asset
+E-VARA is not just a tool; it's a complete SaaS-ready ecosystem architected for immediate enterprise deployment or acquisition.
+- **Strategic Intelligence**: Moves beyond simple breach detection to cross-platform identity correlation.
+- **Autonomous Defense**: Automated monitoring and real-time threat surface mapping.
+- **Executive Reporting**: Institutional-grade PDF dossiers ready for C-suite review.
+- **Architectural Excellence**: Built with a modern, scalable stack (React, TypeScript, Supabase, Tailwind CSS).
+- **Compliance Ready**: Designed with PII protection and SHA-256 client-side hashing protocols.
 
-## 🛠 Tech Stack
-- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS v3
-- **Backend/Infrastructure**: Supabase (Auth, Postgres, Edge Functions)
-- **UI Components**: Shadcn/UI, Lucide Icons, Recharts (Visualizations)
-- **Reporting**: jsPDF, AutoTable
+## 🚀 Key Features
+- **Advanced Identity Correlation Engine**: Maps identity markers across 5+ major social networks and the deep web.
+- **Executive Threat Auditing**: Generates multi-page, professional-grade "Identity Dossiers" for executive security audits.
+- **Dark Web Breach Integration**: Deep integration with historical leak databases via secure Edge Functions.
+- **Real-time Threat Visualization**: Interactive HUD-style dashboard with attack vector simulations.
+- **SaaS Infrastructure**: Integrated multi-tier pricing, billing entry points, and robust user management.
 
-## 📦 Setup & Deployment
+## 🛠 Technical Architecture
+E-VARA utilizes a cutting-edge serverless architecture for maximum scalability and performance.
+- **Frontend**: React 18 (TypeScript), Vite, Tailwind CSS, Framer Motion.
+- **Infrastructure**: Supabase (PostgreSQL, Auth, Edge Functions, RLS).
+- **Visualization**: Custom HUD components, Recharts, Lucide Icons.
+- **Data Integrity**: Web Crypto API for client-side privacy-preserving hashing.
 
-### Environment Variables
-Create a `.env` file in the root:
+## 📦 Getting Started
+
+### Prerequisites
+- Node.js 20+
+- Supabase Account
+
+### Environment Configuration
 ```env
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+VITE_SUPABASE_URL=your_instance_url
+VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
 
-### Backend (Supabase)
-1. **Migrations**: Run the SQL scripts found in `supabase/migrations/` to set up the `monitored_identities` and `threat_findings` tables.
-2. **Edge Functions**: Deploy the `breach-check` function:
+### Deployment
+1. **Database Setup**: Execute `schema.sql` in the Supabase SQL Editor.
+2. **Edge Functions**: Deploy monitoring functions:
    ```bash
    supabase functions deploy breach-check
    ```
-
-### Installation
-```bash
-npm install
-npm run dev
-```
+3. **Frontend**:
+   ```bash
+   npm install
+   npm run build
+   ```
 
 ## 📈 Commercial Potential
-This project is architected for immediate acquisition. It serves a high-growth niche (Cybersecurity SaaS) and features a polished, enterprise-ready aesthetic that justifies premium pricing.
+E-VARA is positioned at the intersection of Cybersecurity and Executive Protection, a multi-billion dollar growth sector.
+- **Target Audience**: Family Offices, Executive Protection Firms, Cyber Insurance Providers.
+- **Monetization**: Recurring SaaS subscriptions, Enterprise licensing, API access.
 
-**Suggested Sale Price**: $10,000 - $15,000
-**Target Platforms**: Acquire.com, Flippa, MicroAcquire
+## 📄 Documentation
+- [Architecture Blueprint](./ARCHITECTURE.md)
+- [Contributing Guidelines](./CONTRIBUTING.md)
+- [Security Disclosure Policy](./SECURITY.md)
 
 ---
-*Built for security-conscious professionals who require absolute operational awareness.*
+*Developed for professionals who demand absolute digital operational awareness.*

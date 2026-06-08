@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { sha256 } from "@/lib/crypto";
 
 export type SubscriptionTier = 'tactical' | 'executive' | 'omni';
+export type SecurityClearance = 'UNCLASSIFIED' | 'SECRET' | 'TOP_SECRET';
 
 export interface IdentityInfo {
   fullName: string;
@@ -15,6 +16,7 @@ export interface IdentityInfo {
 
 export interface UserProfile {
   tier: SubscriptionTier;
+  security_clearance: SecurityClearance;
   node_id_stable: string;
   billing_status: string;
 }
@@ -37,15 +39,25 @@ export function useAuth() {
     queryKey: ["user-profile", user?.id],
     queryFn: async () => {
       if (!user) return null;
-      if (isSimulationMode) return { tier: 'executive', node_id_stable: `NODE-LOCAL-001`, billing_status: 'active' };
+      if (isSimulationMode) return { 
+        tier: 'executive', 
+        security_clearance: 'TOP_SECRET',
+        node_id_stable: `NODE-LOCAL-001`, 
+        billing_status: 'active' 
+      };
 
       const { data, error } = await supabase
         .from('user_profiles')
-        .select('tier, node_id_stable, billing_status')
+        .select('tier, security_clearance, node_id_stable, billing_status')
         .eq('id', user.id)
         .single();
       
-      if (error) return { tier: 'tactical', node_id_stable: "NODE_STABLE", billing_status: 'active' };
+      if (error) return { 
+        tier: 'tactical', 
+        security_clearance: 'UNCLASSIFIED',
+        node_id_stable: "NODE_STABLE", 
+        billing_status: 'active' 
+      };
       return data as UserProfile;
     },
     enabled: !!user,

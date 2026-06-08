@@ -17,6 +17,7 @@ import DigitalFootprintMap from "@/components/DigitalFootprintMap";
 import AttackSimulationPanel from "@/components/AttackSimulationPanel";
 import AIInsightPanel from "@/components/AIInsightPanel";
 import NetworkTraffic from "@/components/NetworkTraffic";
+import EnterpriseSLAMonitor from "@/components/EnterpriseSLAMonitor";
 
 const Dashboard = ({ onLogout }: { onLogout: () => void }) => {
   const { user, profile, identity, logout, saveIdentity } = useAuth();
@@ -51,7 +52,8 @@ const Dashboard = ({ onLogout }: { onLogout: () => void }) => {
   }
 
   return (
-    <div className="min-h-screen bg-[#050810] text-foreground selection:bg-primary/30">
+    <div className="min-h-screen bg-[#050810] text-foreground selection:bg-primary/30 relative overflow-hidden">
+      <div className="scanline" />
       <header className="sticky top-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
           <div className="flex items-center gap-3">
@@ -76,8 +78,11 @@ const Dashboard = ({ onLogout }: { onLogout: () => void }) => {
             </div>
             
             <div className="flex gap-2">
-              <Badge variant="outline" className="mr-2 uppercase font-bold text-[9px] border-primary/40 text-primary px-3">
+              <Badge variant="outline" className="mr-1 uppercase font-bold text-[9px] border-primary/40 text-primary px-3">
                 {profile?.tier || 'TACTICAL'}_TIER
+              </Badge>
+              <Badge variant="outline" className={`mr-2 uppercase font-bold text-[9px] px-3 ${profile?.security_clearance === 'TOP_SECRET' ? 'border-destructive text-destructive' : 'border-muted-foreground text-muted-foreground'}`}>
+                {profile?.security_clearance || 'UNCLASSIFIED'}
               </Badge>
               <Link to="/billing">
                 <button className="p-2 rounded-md border border-primary/30 bg-primary/10 text-primary hover:bg-primary/20 transition-all">
@@ -135,6 +140,7 @@ const Dashboard = ({ onLogout }: { onLogout: () => void }) => {
               </TabsContent>
 
               <TabsContent value="dashboard" className="mt-0 focus-visible:ring-0 space-y-6">
+                <EnterpriseSLAMonitor />
                 <div className="grid gap-6 md:grid-cols-2">
                   <DigitalFootprintMap username={identity?.username || "identity"} />
                   <AttackSimulationPanel email={identity?.email || "classified"} />
