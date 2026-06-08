@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Shield } from "lucide-react";
 
 const CyberDashboardLoader = () => {
   const [logs, setLogs] = useState<string[]>([]);
   
-  const bootLogs = [
+  const bootLogs = useMemo(() => [
     "INITIALIZING_KERNEL_V2.5.0",
     "ESTABLISHING_ENCRYPTED_TUNNEL",
     "MAPPING_GLOBAL_THREAT_GRAPH",
     "SYNCING_BIOMETRIC_REGISTRY",
     "LOAD_COMPLETE: SECURE_ENVIRONMENT_READY"
-  ];
+  ], []);
 
   useEffect(() => {
     let currentLog = 0;
@@ -24,7 +24,7 @@ const CyberDashboardLoader = () => {
       }
     }, 400);
     return () => clearInterval(interval);
-  }, []);
+  }, [bootLogs]);
 
   return (
     <div className="fixed inset-0 z-[1000] bg-[#050505] flex flex-col items-center justify-center p-6 overflow-hidden">
