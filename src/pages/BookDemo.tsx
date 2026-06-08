@@ -3,10 +3,17 @@ import { useState } from "react";
 import { Shield, Calendar, Users, Building, Mail, ChevronRight, CheckCircle2, Globe, Clock, ShieldCheck } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
+import { useSEO } from "@/hooks/useSEO";
 
 const BookDemo = () => {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+
+  useSEO({
+    title: "Schedule a Demo",
+    description: "Establish your defense perimeter. Schedule a technical demonstration of the E-VARA Identity Defense Engine.",
+    canonicalUrl: "https://e-vara.vercel.app/book-demo"
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

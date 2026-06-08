@@ -1,8 +1,15 @@
 import { Shield, Lock, FileText, Scale, Eye, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import { useSEO } from "@/hooks/useSEO";
 
 const LegalProtocol = () => {
+  useSEO({
+    title: "Legal Protocol & Compliance",
+    description: "Review E-VARA's strict Sovereign Data architecture, operational ethics, and compliance frameworks.",
+    canonicalUrl: "https://e-vara.vercel.app/legal"
+  });
+
   return (
     <div className="min-h-screen bg-[#050608] text-foreground font-mono selection:bg-primary/30">
       <nav className="h-20 border-b border-white/5 bg-[#050608]/50 backdrop-blur-xl sticky top-0 z-50">
