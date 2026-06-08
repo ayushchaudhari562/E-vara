@@ -8,7 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 
 import NotFound from "./pages/NotFound.tsx";
 import PricingPage from "./pages/Pricing.tsx";
-import LandingPage from "./pages/Landing.tsx";
+import LandingPage from "./pages/LandingV2.tsx";
 import AuthPage from "./pages/AuthPage.tsx";
 import Dashboard from "./pages/Dashboard.tsx";
 import BookDemo from "./pages/BookDemo.tsx";
