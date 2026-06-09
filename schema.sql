@@ -61,7 +61,7 @@ ALTER TABLE security_audit_logs ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Identity_Isolation" ON monitored_identities FOR ALL USING (auth.uid() = user_id);
 
 -- Relational RLS: Derive ownership securely from the parent table
-CREATE POLICY "Breach_Isolation" ON identity_breaches FOR SELECT USING (
+CREATE POLICY "Breach_Isolation" ON identity_breaches FOR ALL USING (
     identity_id IN (SELECT id FROM monitored_identities WHERE user_id = auth.uid())
 );
 
@@ -91,7 +91,7 @@ BEGIN
     VALUES (
         NEW.id, 
         'NODE-' || upper(encode(gen_random_bytes(8), 'hex')),
-        'inactive'
+        'active'
     );
     RETURN NEW;
 END;

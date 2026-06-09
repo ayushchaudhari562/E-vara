@@ -73,10 +73,13 @@ export function useAuth() {
         if (error.code === 'PGRST116') return null; // No identities found
         throw error;
       }
+      let decodedEmail = data.identity_value_encrypted;
+      try { decodedEmail = atob(data.identity_value_encrypted); } catch (e) {}
+
       return {
         fullName: data.full_name || "",
-        username: data.identity_value_encrypted,
-        email: data.identity_value_encrypted,
+        username: decodedEmail,
+        email: decodedEmail,
         faceImage: null
       };
     },
@@ -98,7 +101,7 @@ export function useAuth() {
     const { error } = await supabase.from('monitored_identities').upsert({
       user_id: user.id,
       identity_type: 'email',
-      identity_value_encrypted: info.email,
+      identity_value_encrypted: btoa(info.email),
       identity_hash: hashedEmail,
       full_name: info.fullName,
       is_active: true

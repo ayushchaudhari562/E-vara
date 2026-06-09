@@ -1,6 +1,5 @@
-
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable";
+// jspdf and autoTable are imported dynamically to prevent chunking issues
+import type { jsPDF } from "jspdf";
 
 export interface ReportIdentity {
   fullName: string;
@@ -25,6 +24,8 @@ export interface ReportScanResults {
 }
 
 export const generateExecutiveReport = async (identity: ReportIdentity, scanResults: ReportScanResults) => {
+  const { jsPDF } = await import("jspdf");
+  const autoTable = (await import("jspdf-autotable")).default;
   const doc = new jsPDF();
   const timestamp = new Date().toLocaleString();
 
