@@ -39,8 +39,8 @@ export const SearchResultsIntelligence = ({
       if (funcError) {
         // Fallback to mock data when offline/failed
         results = [
-          { title: `${fullName} Public Profile`, link: `https://linkedin.com/in/${username}`, snippet: `View the professional profile of ${fullName}...` },
-          { title: `@${username} | Twitter`, link: `https://twitter.com/${username}`, snippet: `Latest tweets from ${fullName} (@${username})...` }
+          { title: `${fullName} Public Profile`, link: `https://www.google.com/search?q=site:linkedin.com/in+${encodeURIComponent(fullName)}`, snippet: `View the professional profile of ${fullName}...` },
+          { title: `@${username.split('@')[0]} | Twitter`, link: `https://www.google.com/search?q=site:twitter.com+${encodeURIComponent(username.split('@')[0])}`, snippet: `Latest tweets from ${fullName} (@${username.split('@')[0]})...` }
         ];
       } else {
         results = data?.results || [];
@@ -49,8 +49,8 @@ export const SearchResultsIntelligence = ({
       // If the endpoint is not fully implemented or returns no data, handle it gracefully
       if (results.length === 0) {
          results = [
-          { title: `${fullName} Public Profile`, link: `https://linkedin.com/in/${username}`, snippet: `View the professional profile of ${fullName}...` },
-          { title: `@${username} | Twitter`, link: `https://twitter.com/${username}`, snippet: `Latest tweets from ${fullName} (@${username})...` }
+          { title: `${fullName} Public Profile`, link: `https://www.google.com/search?q=site:linkedin.com/in+${encodeURIComponent(fullName)}`, snippet: `View the professional profile of ${fullName}...` },
+          { title: `@${username.split('@')[0]} | Twitter`, link: `https://www.google.com/search?q=site:twitter.com+${encodeURIComponent(username.split('@')[0])}`, snippet: `Latest tweets from ${fullName} (@${username.split('@')[0]})...` }
         ];
       }
 
@@ -60,7 +60,7 @@ export const SearchResultsIntelligence = ({
     } catch (err: unknown) {
       // In case of any other unexpected error, still provide mock data so the demo works
       const results = [
-        { title: `${fullName} Public Profile`, link: `https://linkedin.com/in/${username}`, snippet: `View the professional profile of ${fullName}...` },
+        { title: `${fullName} Public Profile`, link: `https://www.google.com/search?q=site:linkedin.com/in+${encodeURIComponent(fullName)}`, snippet: `View the professional profile of ${fullName}...` },
       ];
       const result = analyzeSearchResults(results, fullName, username, 10);
       setAnalysisResult(result);
