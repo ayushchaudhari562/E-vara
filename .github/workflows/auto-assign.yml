@@ -1,0 +1,69 @@
+name: Auto Assign Issues
+
+on:
+  issue_comment:
+    types: [created]
+
+jobs:
+  auto-assign:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Assign issue to volunteer
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = context.payload.comment.body.toLowerCase();
+            
+            // Keywords that indicate the user wants to work on the issue
+            const keywords = [
+              '/assign', 
+              '/claim', 
+              'assign to me', 
+              'i want to work on this', 
+              'i can take this',
+              'i would like to work on this',
+              'let me work on this'
+            ];
+            
+            const wantsToWork = keywords.some(keyword => comment.includes(keyword));
+            
+            if (!wantsToWork) {
+              console.log('Comment does not indicate intent to work on the issue.');
+              return;
+            }
+            
+            const issueNumber = context.issue.number;
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            
+            // Get current issue to check if it's already assigned
+            const { data: issue } = await github.rest.issues.get({
+              owner,
+              repo,
+              issue_number: issueNumber
+            });
+            
+            if (issue.assignees && issue.assignees.length > 0) {
+              console.log('Issue is already assigned to someone else.');
+              return;
+            }
+            
+            const userLogin = context.payload.comment.user.login;
+            
+            // Assign the user
+            await github.rest.issues.addAssignees({
+              owner,
+              repo,
+              issue_number: issueNumber,
+              assignees: [userLogin]
+            });
+            
+            // Leave a welcoming confirmation comment
+            await github.rest.issues.createComment({
+              owner,
+              repo,
+              issue_number: issueNumber,
+              body: `🚀 Assigned to @${userLogin}! Thank you for volunteering to help build E-VARA. Let us know if you have any questions before you start.`
+            });
