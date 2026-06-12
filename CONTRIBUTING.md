@@ -2,7 +2,9 @@
 
 Thank you for your interest in contributing to **E-VARA**! 🚀
 
-We welcome contributions from developers, security researchers, designers, and open-source enthusiasts. Whether you're fixing a bug, improving documentation, or building a new feature, your contributions help make E-VARA better.
+E-VARA is an executive identity intelligence platform focused on privacy-first identity monitoring and digital risk analysis. We welcome contributions from developers, security researchers, designers, technical writers, and open-source enthusiasts.
+
+Whether you're fixing a bug, improving documentation, or implementing a new feature, your contributions help strengthen the project and the community.
 
 ---
 
@@ -14,13 +16,16 @@ We welcome contributions from developers, security researchers, designers, and o
 * Fork and Clone the Repository
 * Install Dependencies
 * Environment Setup
-* Running the Project
-* Create a Branch
-* Making Changes
+* Local Development
+* Database Setup
+* Supabase Edge Functions
+* Creating a Branch
+* Development Guidelines
 * Testing and Linting
 * Commit Guidelines
 * Submitting a Pull Request
 * Security Contributions
+* Contribution Tips
 
 ---
 
@@ -30,7 +35,7 @@ Please help us maintain a positive and professional community.
 
 * Be respectful and constructive.
 * Prioritize security and user privacy.
-* Follow existing architectural patterns.
+* Follow existing project architecture.
 * Welcome and support fellow contributors.
 
 ---
@@ -39,23 +44,24 @@ Please help us maintain a positive and professional community.
 
 Before working on an issue:
 
-1. Check the Issues tab for available tasks.
-2. Comment on the issue if required.
-3. Wait for assignment if the maintainers request it.
+1. Browse the Issues section.
+2. Comment if required.
+3. Wait for assignment when applicable.
 4. Fork the repository.
+5. Create a dedicated branch for your work.
 
 ---
 
 # 📦 Prerequisites
 
-Please install:
+Please ensure you have:
 
 * Node.js 20+
-* Git
 * npm
+* Git
 * A Supabase account
 
-Verify installation:
+Verify your installation:
 
 ```bash
 node -v
@@ -74,22 +80,22 @@ Click the **Fork** button on GitHub.
 ## Step 2: Clone your fork
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/E-vara.git
+git clone https://github.com/YOUR_USERNAME/E-Vara.git
 ```
 
 Navigate into the project:
 
 ```bash
-cd E-vara
+cd E-Vara
 ```
 
 ## Step 3: Add the upstream repository (recommended)
 
 ```bash
-git remote add upstream https://github.com/SHAURYASANYAL3/E-vara.git
+git remote add upstream https://github.com/SHAURYASANYAL3/E-Vara.git
 ```
 
-Verify remotes:
+Verify your remotes:
 
 ```bash
 git remote -v
@@ -109,24 +115,27 @@ npm install
 
 # 🔐 Environment Setup
 
-E-VARA uses Supabase.
+E-VARA uses Supabase for authentication, storage, and backend services.
 
 Create a `.env` file in the project root.
 
 Example:
 
 ```env
-VITE_SUPABASE_URL=your_instance_url
-VITE_SUPABASE_ANON_KEY=your_anon_key
+VITE_SUPABASE_URL=your_supabase_url
+VITE_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
+
+# Alternatively, the project also supports:
+# VITE_SUPABASE_ANON_KEY=your_anon_key
 ```
 
-Never commit secrets or your `.env` file.
+> **Note:** The application supports both `VITE_SUPABASE_PUBLISHABLE_KEY` and `VITE_SUPABASE_ANON_KEY` depending on your Supabase configuration.
+
+⚠️ Never commit your `.env` file or any secret credentials.
 
 ---
 
-# ▶️ Running the Project
-
-## Frontend
+# ▶️ Local Development
 
 Start the development server:
 
@@ -134,110 +143,133 @@ Start the development server:
 npm run dev
 ```
 
-## Production Build
+Create a production build:
 
 ```bash
 npm run build
 ```
 
-## Database Setup
+---
 
-Execute:
+# 🗄 Database Setup
+
+E-VARA uses Supabase PostgreSQL.
+
+The database schema is provided in:
 
 ```
-schema.sql
+./schema.sql
 ```
 
-inside your Supabase SQL Editor.
+Execute the contents of `./schema.sql` using the Supabase SQL Editor to initialize the required tables and database objects.
 
-## Edge Functions
+Example:
 
-Deploy required functions:
+```sql
+-- Execute the SQL statements contained in ./schema.sql
+```
+
+---
+
+# ⚡ Supabase Edge Functions
+
+E-VARA includes several Supabase Edge Functions.
+
+For basic local development and the core identity monitoring workflow, deploy the required `breach-check` function:
 
 ```bash
 supabase functions deploy breach-check
 ```
 
+Additional Edge Functions are available in the repository for advanced and internal platform features. They are not required for basic development unless you are specifically working on those components.
+
 ---
 
 # 🌿 Create a Branch
 
-Always create a separate branch.
+Always create a dedicated branch for your work.
 
-Examples:
+Documentation:
 
 ```bash
-git checkout -b docs/update-contributing-guide
+git checkout -b docs/update-documentation
 ```
 
-```bash
-git checkout -b fix/login-bug
-```
+Bug Fix:
 
 ```bash
-git checkout -b feat/new-dashboard-widget
+git checkout -b fix/issue-description
+```
+
+Feature:
+
+```bash
+git checkout -b feat/feature-name
 ```
 
 ---
 
-# 💻 Make Your Changes
+# 💻 Development Guidelines
 
-While contributing:
+Please follow the existing project architecture and coding standards.
 
-* Follow the existing project structure.
-* Keep changes focused.
-* Maintain readability.
-* Follow TypeScript best practices.
+## TypeScript
 
-## Strict Typing
-
-E-VARA enforces strict typing.
+E-VARA uses strict TypeScript.
 
 ❌ Avoid:
 
-```ts
-let data: any;
+```typescript
+let value: any;
 ```
 
 ✅ Prefer:
 
-```ts
-let data: UserProfile;
+```typescript
+let value: UserProfile;
 ```
+
+## General Guidelines
+
+* Keep changes focused.
+* Write clean and maintainable code.
+* Follow existing project structure.
+* Update documentation when necessary.
+* Prioritize security and privacy.
 
 ---
 
 # ✅ Testing and Linting
 
-Before submitting a PR:
+Before opening a Pull Request, ensure your changes pass project checks.
 
-## Run linting
+## Lint
 
 ```bash
 npm run lint
 ```
 
-## Unit Testing
+## Unit Tests
 
-Use Vitest for logic testing.
+Use Vitest for application logic.
 
-## End-to-End Testing
+## End-to-End Tests
 
-Use Playwright for UI flows.
+Use Playwright for UI workflows.
 
-Please ensure all tests pass before submitting your contribution.
+Please ensure your changes do not introduce failing tests.
 
 ---
 
-# 📝 Commit Your Changes
+# 📝 Commit Guidelines
 
-Stage changes:
+Stage your changes:
 
 ```bash
 git add .
 ```
 
-Commit with a meaningful message:
+Commit using a clear and descriptive message:
 
 ```bash
 git commit -m "docs: improve contributing guide"
@@ -245,16 +277,16 @@ git commit -m "docs: improve contributing guide"
 
 Examples:
 
-* feat: add dashboard component
-* fix: resolve authentication bug
+* feat: add new dashboard component
+* fix: resolve authentication issue
 * docs: update README
 * refactor: simplify API logic
 
 ---
 
-# ☁️ Push Your Branch
+# ☁️ Push Your Changes
 
-Push your work:
+Push your branch:
 
 ```bash
 git push origin your-branch-name
@@ -262,23 +294,22 @@ git push origin your-branch-name
 
 ---
 
-# 🔄 Submit a Pull Request
+# 🔄 Submitting a Pull Request
 
-1. Open your fork on GitHub.
-2. Click **Compare & Pull Request**.
-3. Write a clear title.
-4. Describe your changes.
-5. Reference related issues.
-6. Add screenshots for UI changes if applicable.
-7. Submit your PR.
+1. Push your branch to GitHub.
+2. Open a Pull Request against `main`.
+3. Write a clear title and description.
+4. Reference related issues where applicable.
+5. Include screenshots for UI changes.
+6. Wait for automated checks and code review.
 
-Before submitting, make sure:
+Before submitting, please verify:
 
-* Code builds successfully.
+* Project builds successfully.
 * Linting passes.
 * Tests pass.
 * Documentation is updated if needed.
-* CI checks pass.
+* CI checks complete successfully.
 
 ---
 
@@ -288,11 +319,13 @@ Security is a core principle of E-VARA.
 
 If you discover a security vulnerability:
 
-❌ Do NOT open a public issue.
+❌ Do **not** open a public issue.
 
 Please follow the responsible disclosure process outlined in:
 
-`SECURITY.md`
+```
+SECURITY.md
+```
 
 ---
 
@@ -305,14 +338,16 @@ Good first contributions include:
 * UI enhancements
 * Accessibility improvements
 * Performance optimizations
-* Test coverage
+* Additional test coverage
+
+If you're new to open source, don't hesitate to ask questions or request guidance through the project's issue tracker.
 
 ---
 
 # ❤️ Thank You
 
-Thank you for helping build E-VARA.
+Thank you for contributing to E-VARA!
 
-Every contribution—whether it's code, documentation, testing, or feedback—helps strengthen the platform and the open-source community.
+Every contribution—whether it's code, documentation, testing, bug reports, or feedback—helps improve the platform and strengthens the open-source community.
 
-Happy coding! 🚀
+Happy coding and happy contributing! 🚀
