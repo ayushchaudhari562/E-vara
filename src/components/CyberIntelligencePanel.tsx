@@ -351,6 +351,8 @@ const CyberIntelligencePanel = ({
                 >
                   <button
                     onClick={() => setExpandedEvent(open ? null : event.id)}
+                    aria-expanded={open}
+                    aria-controls={`event-detail-${event.id}`}
                     className="flex w-full items-center justify-between gap-3 text-left"
                   >
                     <div>
@@ -371,7 +373,7 @@ const CyberIntelligencePanel = ({
                     )}
                   </button>
                   {open && (
-                    <p className="mt-2 text-xs text-muted-foreground">
+                    <p id={`event-detail-${event.id}`} className="mt-2 text-xs text-muted-foreground">
                       {event.detail}
                     </p>
                   )}
@@ -393,19 +395,19 @@ const CyberIntelligencePanel = ({
               <button
                 key={node.id}
                 onClick={() => setSelectedNode(node)}
-                className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full px-2 py-1 text-[10px] font-mono transition-all ${
+                aria-pressed={selectedNode?.id === node.id}
+                aria-label={`${node.label} exposure ${node.exposure}%`}
                   selectedNode?.id === node.id
                     ? "bg-primary/30 shadow-[0_0_22px_hsl(var(--primary)/0.65)]"
                     : "bg-secondary/60"
                 }`}
+                className={`absolute -translate-x-1/2 -translate-y-1/2 rounded-full px-2 py-1 text-[10px] font-mono transition-all ${
+              >
                 style={{
                   left: `${node.x}%`,
                   top: `${node.y}%`,
                   border: `1px solid hsl(var(--severity-${node.exposure > 65 ? "high" : node.exposure > 45 ? "medium" : "low"}) / 0.8)`,
                 }}
-              >
-                {node.label}
-              </button>
             ))}
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full border border-primary/80 bg-primary/20 px-3 py-1 text-xs font-semibold shadow-[0_0_28px_hsl(var(--primary)/0.55)]">
               {username || fullName}
@@ -431,6 +433,8 @@ const CyberIntelligencePanel = ({
             <button
               disabled={simulating}
               onClick={runSimulation}
+              aria-label="Run attack simulation"
+              aria-busy={simulating}
               className="neon-button rounded-md bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground disabled:opacity-50"
             >
               Simulate Attack
@@ -477,7 +481,7 @@ const CyberIntelligencePanel = ({
               Ask E-Vara
             </h4>
           </div>
-          <div className="mb-3 flex-1 space-y-2 overflow-y-auto pr-1">
+          <div role="feed" aria-label="Chat messages" className="mb-3 flex-1 space-y-2 overflow-y-auto pr-1">
             {chatMessages.map((message, idx) => (
               <div
                 key={`${message.role}-${idx}`}
