@@ -29,6 +29,7 @@ const Contribution = lazy(() => import("./pages/Contribution.tsx"));
 const TrustCenter = lazy(() => import("./pages/TrustCenter.tsx"));
 const BlogList = lazy(() => import("./pages/BlogList.tsx"));
 const BlogPost = lazy(() => import("./pages/BlogPost.tsx"));
+const AnalystConsole = lazy(() => import("./pages/AnalystConsole.tsx"));
 
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import FeedbackWidget from "@/components/FeedbackWidget";
@@ -139,6 +140,7 @@ const AppRouter = () => {
             <Route path="/blog/:slug" element={<BlogPost />} />
             <Route path="/" element={<Index />} />
             <Route path="/labs" element={<Labs />} />
+            <Route path="/analyst-portal" element={<AnalystConsole />} />
 
             {/* Protected Routes */}
             <Route
