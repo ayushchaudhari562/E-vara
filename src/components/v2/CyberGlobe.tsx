@@ -58,7 +58,15 @@ const CyberGlobe = () => {
 
   return (
     <div className="w-full h-[600px] lg:h-[800px] relative">
+
       <Canvas camera={{ position: [0, 0, 4], fov: 45 }} dpr={dpr}>
+
+      <Canvas
+        camera={{ position: [0, 0, 4], fov: 45 }}
+        dpr={[1, 1.5]}
+        performance={{ min: 0.5 }}
+      >
+
         <ambientLight intensity={0.5} />
         <GlobeParticles count={particleCount} />
       </Canvas>

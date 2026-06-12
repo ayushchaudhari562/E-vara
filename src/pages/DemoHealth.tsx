@@ -1,8 +1,125 @@
+import { useEffect, useState } from "react";
 import { Shield } from "lucide-react";
 import Navbar from "@/components/landing/Navbar";
 import Footer from "@/components/landing/Footer";
+import { useAuth } from "@/hooks/useAuth";
+import { useSimulation } from "@/providers/SimulationProvider";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function DemoHealth() {
+  const { user } = useAuth();
+  const { isSimulationMode } = useSimulation();
+  const [consoleErrors, setConsoleErrors] = useState(0);
+
+  // 1. Edge Worker Queue Query
+  const { data: queueCount } = useQuery({
+    queryKey: ["demo-health-queue-count", user?.id, isSimulationMode],
+    queryFn: async () => {
+      if (isSimulationMode) return 0;
+      const { count, error } = await supabase
+        .from("osint_jobs")
+        .select("*", { count: "exact", head: true })
+        .in("status", ["pending", "processing"]);
+      if (error) throw error;
+      return count || 0;
+    },
+    enabled: !!user && !isSimulationMode,
+    refetchInterval: 5000,
+  });
+
+  // 2. Snapshot Freshness Query
+  const { data: latestSnapshot } = useQuery({
+    queryKey: ["demo-health-latest-snapshot", user?.id, isSimulationMode],
+    queryFn: async () => {
+      if (isSimulationMode) return null;
+      const { data, error } = await supabase
+        .from("risk_snapshots")
+        .select("expires_at")
+        .eq("user_id", user?.id)
+        .order("calculated_at", { ascending: false })
+        .limit(1);
+      if (error) throw error;
+      return data?.[0] || null;
+    },
+    enabled: !!user && !isSimulationMode,
+  });
+
+  // 3. Console Errors local buffer monitor
+  useEffect(() => {
+    const checkErrors = () => {
+      try {
+        const logsStr = localStorage.getItem("e_vara_logs");
+        if (logsStr) {
+          const logs = JSON.parse(logsStr);
+          if (Array.isArray(logs)) {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const errorCount = logs.filter((l: any) => l.level === "error").length;
+            setConsoleErrors(errorCount);
+            return;
+          }
+        }
+      } catch (e) {
+        // ignore storage/parse failures
+      }
+      setConsoleErrors(0);
+    };
+
+    checkErrors();
+    const interval = setInterval(checkErrors, 2000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Compute Queue Vitals
+  let queueText = "0 pending";
+  let queueColor = "text-emerald-400";
+  if (!user) {
+    queueText = "N/A";
+    queueColor = "text-muted-foreground";
+  } else if (!isSimulationMode) {
+    const count = queueCount ?? 0;
+    queueText = `${count} pending`;
+    if (count > 0) {
+      queueColor = "text-amber-400";
+    }
+  }
+
+  // Compute Freshness Vitals
+  let freshnessText = "Stable";
+  let freshnessColor = "text-emerald-400";
+  if (!user) {
+    freshnessText = "N/A";
+    freshnessColor = "text-muted-foreground";
+  } else if (!isSimulationMode) {
+    if (latestSnapshot && latestSnapshot.expires_at) {
+      const expiresAt = new Date(latestSnapshot.expires_at).getTime();
+      if (isNaN(expiresAt)) {
+        freshnessText = "Unavailable";
+        freshnessColor = "text-cyan-400";
+      } else {
+         
+        const now = Date.now();
+        if (now > expiresAt) {
+          freshnessText = "Stale";
+          freshnessColor = "text-amber-400";
+        } else {
+          freshnessText = "Stable";
+          freshnessColor = "text-emerald-400";
+        }
+      }
+    } else if (latestSnapshot) {
+      freshnessText = "Unavailable";
+      freshnessColor = "text-cyan-400";
+    } else {
+      freshnessText = "None";
+      freshnessColor = "text-cyan-400";
+    }
+  }
+
+  // Compute Console Errors Vitals
+  const errorText = String(consoleErrors);
+  const errorColor = consoleErrors > 0 ? "text-red-400" : "text-emerald-400";
+
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col font-sans">
       <Navbar />
@@ -28,21 +145,25 @@ export default function DemoHealth() {
               <p className="text-[10px] uppercase font-mono text-muted-foreground">
                 Edge Worker Queue
               </p>
-              <p className="text-xl font-bold mt-1 text-emerald-400">
-                0 pending
+              <p className={`text-xl font-bold mt-1 ${queueColor}`}>
+                {queueText}
               </p>
             </div>
             <div className="glass-panel p-4 rounded-lg">
               <p className="text-[10px] uppercase font-mono text-muted-foreground">
                 Snapshot Freshness
               </p>
-              <p className="text-xl font-bold mt-1 text-emerald-400">Stable</p>
+              <p className={`text-xl font-bold mt-1 ${freshnessColor}`}>
+                {freshnessText}
+              </p>
             </div>
             <div className="glass-panel p-4 rounded-lg">
               <p className="text-[10px] uppercase font-mono text-muted-foreground">
                 Console Errors
               </p>
-              <p className="text-xl font-bold mt-1 text-emerald-400">0</p>
+              <p className={`text-xl font-bold mt-1 ${errorColor}`}>
+                {errorText}
+              </p>
             </div>
             <div className="glass-panel p-4 rounded-lg">
               <p className="text-[10px] uppercase font-mono text-muted-foreground">
