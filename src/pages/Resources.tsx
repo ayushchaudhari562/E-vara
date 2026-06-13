@@ -2,6 +2,7 @@ import { Shield, FileText, PlayCircle, BookOpen, Download } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useSEO } from "@/hooks/useSEO";
+import { toast } from "sonner";
 
 const ResourcesPage = () => {
   useSEO({
@@ -91,10 +92,11 @@ const ResourcesPage = () => {
                 {item.desc}
               </p>
               <Button
+                onClick={() => toast.success(`Opening article: ${item.title}`)}
                 variant="outline"
                 className="w-full border-white/10 hover:bg-white/5 uppercase tracking-widest text-[10px] font-bold"
               >
-                <Download className="mr-2 h-3 w-3" /> Access Asset
+                <BookOpen className="mr-2 h-3 w-3" /> Read Article
               </Button>
             </div>
           ))}

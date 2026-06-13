@@ -2,12 +2,13 @@ import { Shield, Book, Terminal, Code2, Layers } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { useSEO } from "@/hooks/useSEO";
+import { toast } from "sonner";
 
 const DocsPage = () => {
   useSEO({
-    title: "Documentation",
+    title: "Help Center",
     description:
-      "Official developer documentation and API reference for the E-VARA platform.",
+      "Guides, FAQs, and support documentation to help you secure your digital identity.",
     canonicalUrl: "https://e-vara.vercel.app/docs",
   });
 
@@ -15,22 +16,22 @@ const DocsPage = () => {
     {
       icon: <Terminal className="h-5 w-5 text-primary" />,
       title: "Quick Start",
-      desc: "Initialize your first monitoring node and understand the dashboard architecture.",
+      desc: "Learn how to connect your email and run your first digital footprint scan.",
     },
     {
       icon: <Code2 className="h-5 w-5 text-primary" />,
-      title: "API Reference",
-      desc: "Integrate E-VARA threat data directly into your internal SIEM or SOC dashboards.",
+      title: "Understanding Breaches",
+      desc: "What does a data breach mean for you, and how to protect yourself.",
     },
     {
       icon: <Layers className="h-5 w-5 text-primary" />,
-      title: "Architecture",
-      desc: "Deep dive into our edge-based scanning mechanisms and Supabase integration.",
+      title: "Account Security",
+      desc: "Best practices for setting up 2FA, password managers, and securing your socials.",
     },
     {
       icon: <Book className="h-5 w-5 text-primary" />,
-      title: "Security & Compliance",
-      desc: "Review our SOC2 frameworks, data residency policies, and cryptographic standards.",
+      title: "Privacy Policy",
+      desc: "Read exactly how we protect your data. We never sell your personal information.",
     },
   ];
 
@@ -72,30 +73,30 @@ const DocsPage = () => {
               Getting Started
             </h4>
             <ul className="space-y-2 text-sm text-white/80">
-              <li className="text-primary cursor-pointer hover:underline">
+              <li onClick={() => toast.info("Opening Introduction")} className="text-primary cursor-pointer hover:underline">
                 Introduction
               </li>
-              <li className="cursor-pointer hover:text-white transition-colors">
-                Authentication
+              <li onClick={() => toast.info("Opening Account Setup")} className="cursor-pointer hover:text-white transition-colors">
+                Account Setup
               </li>
-              <li className="cursor-pointer hover:text-white transition-colors">
-                Adding Identities
+              <li onClick={() => toast.info("Opening Running Scans")} className="cursor-pointer hover:text-white transition-colors">
+                Running Scans
               </li>
             </ul>
           </div>
           <div>
             <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
-              Core Concepts
+              Identity Safety
             </h4>
             <ul className="space-y-2 text-sm text-white/80">
-              <li className="cursor-pointer hover:text-white transition-colors">
-                Threat Severity
+              <li onClick={() => toast.info("Opening Data Breach Guide")} className="cursor-pointer hover:text-white transition-colors">
+                Data Breaches
               </li>
-              <li className="cursor-pointer hover:text-white transition-colors">
-                Report Generation
+              <li onClick={() => toast.info("Opening Password Security")} className="cursor-pointer hover:text-white transition-colors">
+                Password Security
               </li>
-              <li className="cursor-pointer hover:text-white transition-colors">
-                RBAC & Permissions
+              <li onClick={() => toast.info("Opening FAQs")} className="cursor-pointer hover:text-white transition-colors">
+                General FAQs
               </li>
             </ul>
           </div>
@@ -104,17 +105,17 @@ const DocsPage = () => {
         {/* Content */}
         <main className="flex-1 max-w-4xl">
           <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-6">
-            Documentation
+            Help Center
           </h1>
           <p className="text-muted-foreground font-body text-lg mb-12">
-            Everything you need to deploy, configure, and scale E-VARA within
-            your organizational infrastructure.
+            Everything you need to set up your account, scan your footprint, and secure your digital reputation.
           </p>
 
           <div className="grid sm:grid-cols-2 gap-6">
             {sections.map((sec, i) => (
               <div
                 key={i}
+                onClick={() => toast.success(`Loading section: ${sec.title}`)}
                 className="p-6 rounded-2xl border border-white/5 bg-[#0A0C12] hover:border-primary/30 transition-all cursor-pointer group"
               >
                 <div className="flex items-center gap-3 mb-4">
