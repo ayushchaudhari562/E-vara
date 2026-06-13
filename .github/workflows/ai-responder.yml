@@ -63,7 +63,7 @@ jobs:
                   "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                  model: "google/gemma-4-31b-it:free",
+                  model: "anthropic/claude-3.5-sonnet",
                   messages: [
                     { role: "system", content: "You are a helpful and polite GitHub AI assistant." },
                     { role: "user", content: prompt }
