@@ -121,8 +121,35 @@ The Identity Analysis Pipeline follows several core principles:
 
 
 ### Threat Surface Mapping
-- **Vector Analysis**: Real-time correlation of metadata to identify potential attack paths.
-- **Auditing**: Automated generation of PDF dossiers using `jsPDF` for executive reporting.
+
+Threat Surface Mapping extends the Identity Analysis Pipeline by transforming correlated identity signals into actionable security intelligence.
+
+#### Vector Analysis
+
+The outputs generated during **Step 4: Correlation** are evaluated to identify potential threat vectors and attack paths.
+
+This process includes:
+
+* Correlating identity markers across multiple intelligence sources.
+* Identifying relationships between exposure events.
+* Estimating relative risk based on available evidence.
+* Building a higher-level view of an individual's digital exposure surface.
+
+The objective is to provide explainable security insights while maintaining E-VARA's privacy-first approach.
+
+#### Auditing and Executive Reporting
+
+The findings generated throughout the pipeline are incorporated into **Step 7: Presentation Layer** to produce traceable security artifacts.
+
+This includes:
+
+* Executive dashboards.
+* Identity monitoring summaries.
+* Historical exposure tracking.
+* Professional PDF dossiers generated using `jsPDF`.
+
+These reports help users understand what changed, why it matters, and what actions may be appropriate for improving their digital security posture.
+
 
 
 
