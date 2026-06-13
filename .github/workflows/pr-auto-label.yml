@@ -87,10 +87,14 @@ jobs:
             
             // Leave a comment if there are errors so the contributor knows why
             if (!buildSuccess || !lintSuccess) {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                body: commentBody
-              });
+              try {
+                await github.rest.issues.createComment({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  issue_number: prNumber,
+                  body: commentBody
+                });
+              } catch (err) {
+                console.error(`Error adding comment: ${err}`);
+              }
             }
