@@ -73,30 +73,30 @@ const DocsPage = () => {
               Getting Started
             </h4>
             <ul className="space-y-2 text-sm text-white/80">
-              <li onClick={() => toast.info("Opening Introduction")} className="text-primary cursor-pointer hover:underline">
+              <li onClick={() => toast.success("Loading: Introduction")} className="text-primary cursor-pointer hover:underline">
                 Introduction
               </li>
-              <li onClick={() => toast.info("Opening Account Setup")} className="cursor-pointer hover:text-white transition-colors">
-                Account Setup
+              <li onClick={() => toast.success("Loading: Authentication")} className="cursor-pointer hover:text-white transition-colors">
+                Authentication
               </li>
-              <li onClick={() => toast.info("Opening Running Scans")} className="cursor-pointer hover:text-white transition-colors">
-                Running Scans
+              <li onClick={() => toast.success("Loading: Adding Identities")} className="cursor-pointer hover:text-white transition-colors">
+                Adding Identities
               </li>
             </ul>
           </div>
           <div>
             <h4 className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-3">
-              Identity Safety
+              Core Concepts
             </h4>
             <ul className="space-y-2 text-sm text-white/80">
-              <li onClick={() => toast.info("Opening Data Breach Guide")} className="cursor-pointer hover:text-white transition-colors">
-                Data Breaches
+              <li onClick={() => toast.success("Loading: Threat Severity")} className="cursor-pointer hover:text-white transition-colors">
+                Threat Severity
               </li>
-              <li onClick={() => toast.info("Opening Password Security")} className="cursor-pointer hover:text-white transition-colors">
-                Password Security
+              <li onClick={() => toast.success("Loading: Report Generation")} className="cursor-pointer hover:text-white transition-colors">
+                Report Generation
               </li>
-              <li onClick={() => toast.info("Opening FAQs")} className="cursor-pointer hover:text-white transition-colors">
-                General FAQs
+              <li onClick={() => toast.success("Loading: RBAC & Permissions")} className="cursor-pointer hover:text-white transition-colors">
+                RBAC & Permissions
               </li>
             </ul>
           </div>
