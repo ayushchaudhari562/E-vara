@@ -77,6 +77,7 @@ export const AIChatAssistant = () => {
 
   useEffect(() => {
     if (open && messages.length === 0) {
+      
       setMessages([
         {
           role: "assistant",
