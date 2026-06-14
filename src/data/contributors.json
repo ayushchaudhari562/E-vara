@@ -11,7 +11,12 @@
     "featured": true,
     "is_founding": true,
     "level": "Founding Contributor",
-    "badges": ["Backend", "Security", "Product", "NSOC'26"],
+    "badges": [
+      "Backend",
+      "Security",
+      "Product",
+      "NSOC'26"
+    ],
     "joinedAt": "Jan 2024",
     "resolved_issues": [
       {
@@ -34,7 +39,11 @@
     "featured": true,
     "is_founding": true,
     "level": "Core Contributor",
-    "badges": ["Frontend", "Design", "NSOC'26"],
+    "badges": [
+      "Frontend",
+      "Design",
+      "NSOC'26"
+    ],
     "joinedAt": "Feb 2024",
     "resolved_issues": [
       {
@@ -53,7 +62,7 @@
     "bio": "Open source contributor helping build the E-VARA perimeter.",
     "avatar": "https://avatars.githubusercontent.com/u/193049402?v=4",
     "contribution_summary": "Platform Improvements",
-    "merged_prs": 14,
+    "merged_prs": 21,
     "featured": false,
     "is_founding": false,
     "level": "Contributor",
@@ -61,10 +70,10 @@
     "joinedAt": "Jun 2026",
     "resolved_issues": [
       {
-        "issueNumber": 108,
-        "title": "🏆 Top Contribution: fix: resolve CI lint errors (react-hooks/purity) on main",
-        "description": "Impact Factor: 34 additions, 923 deletions. Context:   Fixes 107  CI lint failures    Fixes the reacthookspurity lint error on main t...",
-        "prLink": "https://github.com/SHAURYASANYAL3/E-vara/pull/108"
+        "issueNumber": 155,
+        "title": "🏆 Top Contribution: feat: migrate websocket to socketio",
+        "description": "Impact Factor: 1202 additions, 291 deletions. Context:  Overview  Migrated the realtime threat alerts feed from native WebSockets to So...",
+        "prLink": "https://github.com/SHAURYASANYAL3/E-vara/pull/155"
       }
     ]
   },
@@ -126,7 +135,9 @@
     "featured": false,
     "is_founding": false,
     "level": "Contributor",
-    "badges": ["NSOC'26"],
+    "badges": [
+      "NSOC'26"
+    ],
     "joinedAt": "Jun 2026",
     "resolved_issues": [
       {
@@ -145,18 +156,21 @@
     "bio": "Open source contributor helping build the E-VARA perimeter.",
     "avatar": "https://avatars.githubusercontent.com/u/186990161?v=4",
     "contribution_summary": "UI Improvements",
-    "merged_prs": 4,
+    "merged_prs": 7,
     "featured": false,
     "is_founding": false,
     "level": "Contributor",
-    "badges": ["Frontend", "NSOC'26"],
+    "badges": [
+      "Frontend",
+      "NSOC'26"
+    ],
     "joinedAt": "Jun 2026",
     "resolved_issues": [
       {
-        "issueNumber": 117,
-        "title": "🏆 Top Contribution: feat: Add Pre-commit Hook (Husky) to run Prettier automatically",
-        "description": "Impact Factor: 658 additions, 39 deletions. Context: Closes 88     Description  Implemented a precommit hook using Husky and lintstag...",
-        "prLink": "https://github.com/SHAURYASANYAL3/E-vara/pull/117"
+        "issueNumber": 148,
+        "title": "🏆 Top Contribution: feat: Add Structured Logging and Request Tracing to Edge Functions",
+        "description": "Impact Factor: 3036 additions, 777 deletions. Context: Closes 134     Description  Implemented standard structured JSON logging and bas...",
+        "prLink": "https://github.com/SHAURYASANYAL3/E-vara/pull/148"
       }
     ]
   },
@@ -172,7 +186,9 @@
     "featured": false,
     "is_founding": false,
     "level": "Contributor",
-    "badges": ["NSOC'26"],
+    "badges": [
+      "NSOC'26"
+    ],
     "joinedAt": "Jun 2026",
     "resolved_issues": [
       {
@@ -180,6 +196,56 @@
         "title": "🏆 Top Contribution: docs: add Mermaid architecture diagram to README",
         "description": "Impact Factor: 36 additions, 7 deletions. Context:  Description    Adds a Mermaid.js architecture diagram to the main README.md to ...",
         "prLink": "https://github.com/SHAURYASANYAL3/E-vara/pull/116"
+      }
+    ]
+  },
+  {
+    "id": "c_Haripriyagupta",
+    "name": "Haripriya Gupta ",
+    "github": "https://github.com/Haripriyagupta",
+    "role": "Contributor",
+    "bio": "Open source contributor helping build the E-VARA perimeter.",
+    "avatar": "https://avatars.githubusercontent.com/u/218824161?v=4",
+    "contribution_summary": "Platform Improvements",
+    "merged_prs": 1,
+    "featured": false,
+    "is_founding": false,
+    "level": "Contributor",
+    "badges": [
+      "NSOC'26"
+    ],
+    "joinedAt": "Jun 2026",
+    "resolved_issues": [
+      {
+        "issueNumber": 158,
+        "title": "🏆 Top Contribution: feat: show and copy SHA-256 identity hash after scan in IdentityForm",
+        "description": "Impact Factor: 88 additions, 5 deletions. Context:  Summary  Surfaces the SHA256 identity hash to the user after a successful breac...",
+        "prLink": "https://github.com/SHAURYASANYAL3/E-vara/pull/158"
+      }
+    ]
+  },
+  {
+    "id": "c_toufiq00007",
+    "name": "Toufiq Amin",
+    "github": "https://github.com/toufiq00007",
+    "role": "Contributor",
+    "bio": "Open source contributor helping build the E-VARA perimeter.",
+    "avatar": "https://avatars.githubusercontent.com/u/194249628?v=4",
+    "contribution_summary": "Platform Improvements",
+    "merged_prs": 2,
+    "featured": false,
+    "is_founding": false,
+    "level": "Contributor",
+    "badges": [
+      "NSOC'26"
+    ],
+    "joinedAt": "Jun 2026",
+    "resolved_issues": [
+      {
+        "issueNumber": 150,
+        "title": "🏆 Top Contribution: feat: add accessible and typed Scroll-to-Top floating button",
+        "description": "Impact Factor: 65 additions, 0 deletions. Context:   Summary  Introduces a responsive, accessible, and stronglytyped Scroll to Top ...",
+        "prLink": "https://github.com/SHAURYASANYAL3/E-vara/pull/150"
       }
     ]
   }

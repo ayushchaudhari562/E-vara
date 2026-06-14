@@ -41,7 +41,15 @@ const SprintBanner = () => (
         </p>
       </div>
 
-      <div className="flex items-center gap-4 shrink-0">
+      <div className="flex items-center gap-4 shrink-0 flex-wrap justify-end">
+        <div className="glass-panel p-4 rounded-xl flex flex-col items-center justify-center min-w-[120px] relative overflow-hidden border-yellow-500/30">
+          <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/10 to-amber-500/5 z-0"></div>
+          <Target className="h-5 w-5 text-yellow-400 mb-2 z-10" />
+          <p className="text-[10px] font-mono uppercase text-muted-foreground z-10">
+            Current Rank
+          </p>
+          <p className="text-lg font-black text-white mt-1 z-10">#28</p>
+        </div>
         <div className="glass-panel p-4 rounded-xl flex flex-col items-center justify-center min-w-[120px]">
           <Target className="h-5 w-5 text-cyan-400 mb-2" />
           <p className="text-[10px] font-mono uppercase text-muted-foreground">
