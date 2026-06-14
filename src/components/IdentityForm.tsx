@@ -279,7 +279,10 @@ const IdentityForm = ({ onSave, initial }: IdentityFormProps) => {
             title="Copy hash to clipboard"
           >
             {copied ? (
-              <CheckCheck className="h-4 w-4 text-green-400" aria-hidden="true" />
+              <CheckCheck
+                className="h-4 w-4 text-green-400"
+                aria-hidden="true"
+              />
             ) : (
               <Copy
                 className="h-4 w-4 text-muted-foreground hover:text-primary"
