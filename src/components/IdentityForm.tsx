@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useRef, useState, useCallback } from "react";
 import { User, ShieldCheck, Loader2, Copy, CheckCheck } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,6 +16,8 @@ interface IdentityFormProps {
   onSave?: (data: IdentityData) => void;
   initial?: Partial<IdentityData> | null;
 }
+
+const SUBMIT_COOLDOWN_MS = 10000; // 10 seconds between submissions
 
 const IdentityForm = ({ onSave, initial }: IdentityFormProps) => {
   const { user, saveIdentity } = useAuth();
@@ -57,11 +59,23 @@ const IdentityForm = ({ onSave, initial }: IdentityFormProps) => {
       });
     }
   }, [identityHash]);
+  const lastSubmitRef = useRef<number>(0);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (loading) return;
     if (!user) return;
+
+    const now = Date.now();
+    const elapsed = now - lastSubmitRef.current;
+    if (elapsed < SUBMIT_COOLDOWN_MS) {
+      const waitSeconds = Math.ceil((SUBMIT_COOLDOWN_MS - elapsed) / 1000);
+      toast.error("Please slow down", {
+        description: `You can submit again in ${waitSeconds}s.`,
+      });
+      return;
+    }
+    lastSubmitRef.current = now;
 
     setLoading(true);
 

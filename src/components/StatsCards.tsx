@@ -28,6 +28,7 @@ const StatsCards = ({
 
   useEffect(() => {
     if (!monitoringActive || !monitoringStartTime) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setUptime("00:00:00");
       return;
     }
