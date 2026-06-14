@@ -62,11 +62,14 @@ const TrustCenter = () => {
         title: "Export Successful",
         description: "Your data history has been downloaded safely.",
       });
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Export error:", error);
       toast({
         title: "Export Failed",
-        description: error.message || "An error occurred during completion.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "An error occurred during completion.",
         variant: "destructive",
       });
     } finally {
@@ -109,11 +112,12 @@ const TrustCenter = () => {
       if (!data.success) {
         throw new Error(data.error?.message || "Deletion request failed");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("Deletion error:", error);
       toast({
         title: "Deletion Failed",
-        description: error.message || "An error occurred.",
+        description:
+          error instanceof Error ? error.message : "An error occurred.",
         variant: "destructive",
       });
     } finally {

@@ -192,4 +192,20 @@ serve(async (req) => {
       status: 400,
     });
   }
+
+  export default async (req: Request) => {
+  const { user_id } = await req.json();
+
+  // Example: query live risk scores from DB or engine
+  const findings = [
+    { vector: "Phishing Domain", score: 72 },
+    { vector: "Compromised Email", score: 85 },
+  ];
+
+  return new Response(JSON.stringify({ success: true, findings }), {
+    headers: { "Content-Type": "application/json" },
+    status: 200,
+  });
+};
+
 });
