@@ -77,7 +77,7 @@ export const AIChatAssistant = () => {
 
   useEffect(() => {
     if (open && messages.length === 0) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+      
       setMessages([
         {
           role: "assistant",

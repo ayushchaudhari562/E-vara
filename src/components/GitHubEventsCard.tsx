@@ -17,7 +17,7 @@ export const GitHubEventsCard = ({ username }: Props) => {
 
   useEffect(() => {
     if (!username) return;
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    
     setLoading(true);
     void (async () => {
       try {

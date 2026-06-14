@@ -122,7 +122,7 @@ export default function FuturisticThreatConsole({
   const [done, setDone] = useState(false);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    
     setDone(false);
     const timer = setInterval(() => {
       setStage((s) => {
