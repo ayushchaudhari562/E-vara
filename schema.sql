@@ -110,6 +110,10 @@ CREATE TABLE account_deletion_requests (
     status TEXT DEFAULT 'pending' CHECK (status IN ('pending','completed'))
 );
 
+CREATE UNIQUE INDEX uq_account_deletion_requests_user_pending
+ON account_deletion_requests (user_id)
+WHERE status = 'pending';
+
 -- RLS: Only allow the requesting user to see their own deletion request
 ALTER TABLE account_deletion_requests ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Deletion_Isolation" ON account_deletion_requests

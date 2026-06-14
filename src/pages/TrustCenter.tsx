@@ -39,6 +39,7 @@ export const handleDataExport = async (userId: string) => {
 const TrustCenter = () => {
   const { user } = useAuth();
   const [isExporting, setIsExporting] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const onExportClick = async () => {
     if (!user) {
@@ -73,14 +74,6 @@ const TrustCenter = () => {
     }
   };
 
-  const TrustCenter = () => {
-  const { user } = useAuth();
-  const [isExporting, setIsExporting] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false); // 👈 new state
-
-  const onExportClick = async () => { /* ... your existing code ... */ };
-
-  // 👇 NEW HANDLER
   const onDeleteClick = async () => {
     if (!user) {
       toast({
@@ -95,13 +88,21 @@ const TrustCenter = () => {
       setIsDeleting(true);
       toast({
         title: "Deletion Initiated",
-        description: "Your request has been logged. Account will be removed after 30 days.",
+        description:
+          "Your request has been logged. Account will be removed after 30 days.",
       });
 
-      const res = await fetch("/functions/v1/delete-identity", {
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
+      const res = await fetch("/functions/v1/cleanup-deletions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ user_id: user.id }),
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify({}),
       });
 
       const data = await res.json();
@@ -124,31 +125,6 @@ const TrustCenter = () => {
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
       <div className="pt-32 container mx-auto px-4 max-w-6xl">
-        {/* Existing Export Button */}
-        <Button onClick={onExportClick} disabled={isExporting}>
-          EXPORT MY DATA
-        </Button>
-
-        {/* 👇 NEW Delete Button */}
-        <Button
-          onClick={onDeleteClick}
-          disabled={isDeleting}
-          className="ml-4 font-semibold shadow-md bg-red-600 hover:bg-red-700"
-        >
-          {isDeleting ? "Deleting..." : "DELETE MY IDENTITY"}
-        </Button>
-
-        {/* ...rest of your UI... */}
-      </div>
-    </div>
-  );
-};
-
-
-  return (
-    <div className="min-h-screen bg-background text-foreground">
-      <Navbar />
-      <div className="pt-32 container mx-auto px-4 max-w-6xl">
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 border-b pb-6">
           <div>
             <h1 className="text-4xl font-black tracking-tight flex items-center gap-2">
@@ -159,14 +135,23 @@ const TrustCenter = () => {
               consent history transparency.
             </p>
           </div>
-          <Button
-            onClick={onExportClick}
-            disabled={isExporting}
-            className="font-semibold shadow-md"
-          >
-            <Download className="mr-2 h-4 w-4" />{" "}
-            {isExporting ? "Exporting..." : "EXPORT MY DATA"}
-          </Button>
+          <div className="flex gap-4">
+            <Button
+              onClick={onExportClick}
+              disabled={isExporting}
+              className="font-semibold shadow-md"
+            >
+              <Download className="mr-2 h-4 w-4" />{" "}
+              {isExporting ? "Exporting..." : "EXPORT MY DATA"}
+            </Button>
+            <Button
+              onClick={onDeleteClick}
+              disabled={isDeleting}
+              className="font-semibold shadow-md bg-red-600 hover:bg-red-700"
+            >
+              {isDeleting ? "Deleting..." : "DELETE MY IDENTITY"}
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-6 md:grid-cols-3 mb-10">
