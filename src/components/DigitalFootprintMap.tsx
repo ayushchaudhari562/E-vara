@@ -1,4 +1,10 @@
 import { useMemo, useState } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface DigitalFootprintMapProps {
   username: string;
@@ -65,17 +71,25 @@ const DigitalFootprintMap = ({ username }: DigitalFootprintMapProps) => {
             ))}
           </svg>
 
-          {platformNodes.map((node) => (
-            <button
-              key={node.id}
-              type="button"
-              onClick={() => setSelectedNode(node)}
-              className={`node-platform absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-surface/90 px-3 py-1 text-[9px] font-mono text-foreground hover:border-primary/50 transition-all ${selectedNode.id === node.id ? "border-primary/60 security-orange-glow" : ""}`}
-              style={{ left: `${node.x}%`, top: `${node.y}%` }}
-            >
-              {node.label}
-            </button>
-          ))}
+          <TooltipProvider>
+            {platformNodes.map((node) => (
+              <Tooltip key={node.id}>
+                <TooltipTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedNode(node)}
+                    className={`node-platform absolute -translate-x-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-surface/90 px-3 py-1 text-[9px] font-mono text-foreground hover:border-primary/50 transition-all ${selectedNode.id === node.id ? "border-primary/60 security-orange-glow" : ""}`}
+                    style={{ left: `${node.x}%`, top: `${node.y}%` }}
+                  >
+                    {node.label}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent className="bg-popover border border-border text-[9px] font-mono py-1 px-2 text-foreground">
+                  <p>Node ID: {node.id}</p>
+                </TooltipContent>
+              </Tooltip>
+            ))}
+          </TooltipProvider>
         </div>
 
         <div className="rounded-lg border border-white/5 bg-white/[0.02] p-4">
