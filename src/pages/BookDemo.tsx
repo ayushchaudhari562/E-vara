@@ -57,7 +57,7 @@ const BookDemo = () => {
       } else {
         setSubmitted(true);
       }
-    } catch (error: any) {
+    } catch (error) {
       log("error", "Network protocol error in BookDemo", { error });
       toast.error("Network protocol error", {
         description: "Check your connection.",
